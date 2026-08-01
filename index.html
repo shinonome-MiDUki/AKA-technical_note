@@ -76,6 +76,11 @@ a{-webkit-tap-highlight-color:transparent;}
   .sidebar{position:relative; height:auto; border-right:none; border-bottom:1px solid var(--line); max-height:800px; transition:max-height .38s ease, padding .38s ease, opacity .28s ease, border-color .38s ease;}
   .layout.collapsed .sidebar{max-height:0; padding:0 32px; border-bottom-color:transparent;}
 }
+@media (max-width: 900px) {
+  body.sidebar-collapsed .layout {
+    grid-template-columns: 0px 1fr;
+  }
+}
 
 
 /* ---------- sidebar toggle ---------- */
