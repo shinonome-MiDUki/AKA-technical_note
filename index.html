@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="ja">
+
+<html class="lang-en" lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>制作テクニカルノート — 赫・POVホラー制作記録</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;800&family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title data-title-en="Production Technical Notes — Aka: A POV Horror Production Diary" data-title-ja="制作テクニカルノート — 赫・POVホラー制作記録">Production Technical Notes — Aka: A POV Horror Production Diary</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;800&amp;family=Noto+Sans+JP:wght@300;400;500;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --bg-void:#0c0d10;
@@ -483,779 +484,652 @@ footer .fmeta{font-family:var(--font-mono); font-size:10.5px; color:var(--paper-
   .section{padding:80px 20px;}
   .gallery{grid-template-columns:repeat(auto-fill, minmax(150px,1fr));}
 }
+
+/* ---------- language toggle ---------- */
+html.lang-en .lang-ja{display:none;}
+html.lang-ja .lang-en{display:none;}
+html.lang-ja body{font-family:var(--font-body);}
+html.lang-en .subsection p, html.lang-en .section-intro, html.lang-en .hero p.lede,
+html.lang-en .tech-list li, html.lang-en .callout, html.lang-en .sidebar-foot,
+html.lang-en .cap{font-family:'JetBrains Mono', 'Noto Sans JP', sans-serif; letter-spacing:0.005em;}
+
+.lang-toggle{
+  position:fixed;
+  top:28px;
+  right:36px;
+  z-index:80;
+  display:flex;
+  align-items:center;
+  background:var(--bg-panel-2);
+  border:1px solid var(--line-strong);
+  border-radius:2px;
+  overflow:hidden;
+  font-family:var(--font-mono);
+  font-size:11px;
+  letter-spacing:0.08em;
+}
+.lang-toggle button{
+  appearance:none;
+  border:none;
+  background:transparent;
+  color:var(--paper-dim);
+  padding:8px 14px;
+  cursor:pointer;
+  transition:background .2s ease, color .2s ease;
+}
+.lang-toggle button.active{
+  background:var(--ink-red-bright);
+  color:var(--paper);
+}
+.lang-toggle button:not(.active):hover{background:var(--bg-panel); color:var(--paper);}
+@media (max-width:900px){
+  .lang-toggle{top:64px; right:20px;}
+}
 </style>
 </head>
 <body>
-
-<button class="sidebar-toggle" id="sidebarToggle" aria-label="目次の開閉" aria-expanded="true">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+<button aria-expanded="true" aria-label="目次の開閉" class="sidebar-toggle" id="sidebarToggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
 </button>
 
+<div aria-label="Language / 言語" class="lang-toggle" id="langToggle" role="group">
+<button class="active" data-lang="en" type="button">EN</button>
+<button data-lang="ja" type="button">日本語</button>
+</div>
+
 <div class="layout" id="layoutRoot">
-
-  <!-- ============ SIDEBAR / TOC ============ -->
-  <aside class="sidebar">
-    <div class="sidebar-top">
-      <div class="sidebar-title">テクニカルノート</div>
-      <div class="sidebar-sub">PRODUCTION PIPELINE DOCUMENT</div>
-      <nav class="toc">
-        <a href="#s1"><span class="num">01</span> プロダクションパイプライン</a>
-        <a href="#s2"><span class="num">02</span> 美術・造形とルックデヴ</a>
-        <a href="#s3"><span class="num">03</span> プロシージャル生成</a>
-        <a href="#s4"><span class="num">04</span> レンダリングと最適化</a>
-        <a href="#s5"><span class="num">05</span> コンポジット</a>
-        <a href="#s6"><span class="num">06</span> 音響とオーディオ設計</a>
-      </nav>
-    </div>
-    <div class="sidebar-foot">赫<br>映像制作記録<br>Full Pipeline Documentation</div>
-  </aside>
-
-  <!-- ============ MAIN CONTENT ============ -->
-  <div class="content">
-
-    <!-- ============ HERO ============ -->
-    <section class="hero">
-      <svg class="hero-ink" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-        <path d="M200 60 C 220 100, 260 110, 250 150 C 300 160, 300 210, 250 220 C 270 260, 230 300, 200 270 C 170 300, 130 260, 150 220 C 100 210, 100 160, 150 150 C 140 110, 180 100, 200 60 Z" fill="#9c2b3a" opacity="0.25"/>
-        <path d="M200 90 C 212 115, 236 122, 228 148 C 262 154, 262 186, 228 192 C 240 216, 216 240, 200 222 C 184 240, 160 216, 172 192 C 138 186, 138 154, 172 148 C 164 122, 188 115, 200 90 Z" fill="#c23e4f" opacity="0.3"/>
-      </svg>
-      <svg class="hero-torii" viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
-        <g fill="none" stroke="#a9865a" stroke-width="2" opacity="0.55">
-          <line x1="220" y1="40" x2="220" y2="290"/>
-          <line x1="680" y1="40" x2="680" y2="290"/>
-          <path d="M170 60 L730 60 L710 20 L190 20 Z"/>
-          <line x1="240" y1="110" x2="660" y2="110"/>
-        </g>
-        <g stroke="#6b5334" stroke-width="1" opacity="0.35">
-          <line x1="0" y1="292" x2="900" y2="292"/>
-          <line x1="0" y1="270" x2="900" y2="278"/>
-        </g>
-      </svg>
-      <div class="hero-eyebrow">Behind The Horror — Full Production Breakdown</div>
-      <h1><img src="title.png" alt="赫" class="hero-title-icon"><br><em>異常</em>の記録</h1>
-      <p class="lede">
-        和風の美学と POV ホラーを掛け合わせた一人称ホラー映像の全制作工程。
+<!-- ============ SIDEBAR / TOC ============ -->
+<aside class="sidebar">
+<div class="sidebar-top">
+<div class="sidebar-title"><span class="lang-en">Technical Notes</span> <span class="lang-ja">テクニカルノート</span></div>
+<div class="sidebar-sub">PRODUCTION PIPELINE DOCUMENT</div>
+<nav class="toc">
+<a href="#s1"><span class="num">01</span> <span class="lang-en">Production Pipeline</span><span class="lang-ja">プロダクションパイプライン</span></a>
+<a href="#s2"><span class="num">02</span> <span class="lang-en">Art, Sculpting &amp; Look Dev</span><span class="lang-ja">美術・造形とルックデヴ</span></a>
+<a href="#s3"><span class="num">03</span> <span class="lang-en">Procedural Generation</span><span class="lang-ja">プロシージャル生成</span></a>
+<a href="#s4"><span class="num">04</span> <span class="lang-en">Rendering &amp; Optimization</span><span class="lang-ja">レンダリングと最適化</span></a>
+<a href="#s5"><span class="num">05</span> <span class="lang-en">Compositing</span><span class="lang-ja">コンポジット</span></a>
+<a href="#s6"><span class="num">06</span> <span class="lang-en">Sound &amp; Audio Design</span><span class="lang-ja">音響とオーディオ設計</span></a>
+</nav>
+</div>
+<div class="sidebar-foot"><span class="lang-en">Aka<br/>Production Record<br/>Full Pipeline Documentation</span> <span class="lang-ja">赫<br/>映像制作記録<br/>Full Pipeline Documentation</span></div>
+</aside>
+<!-- ============ MAIN CONTENT ============ -->
+<div class="content">
+<!-- ============ HERO ============ -->
+<section class="hero">
+<svg class="hero-ink" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+<path d="M200 60 C 220 100, 260 110, 250 150 C 300 160, 300 210, 250 220 C 270 260, 230 300, 200 270 C 170 300, 130 260, 150 220 C 100 210, 100 160, 150 150 C 140 110, 180 100, 200 60 Z" fill="#9c2b3a" opacity="0.25"></path>
+<path d="M200 90 C 212 115, 236 122, 228 148 C 262 154, 262 186, 228 192 C 240 216, 216 240, 200 222 C 184 240, 160 216, 172 192 C 138 186, 138 154, 172 148 C 164 122, 188 115, 200 90 Z" fill="#c23e4f" opacity="0.3"></path>
+</svg>
+<svg class="hero-torii" preserveAspectRatio="xMidYMax meet" viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+<g fill="none" opacity="0.55" stroke="#a9865a" stroke-width="2">
+<line x1="220" x2="220" y1="40" y2="290"></line>
+<line x1="680" x2="680" y1="40" y2="290"></line>
+<path d="M170 60 L730 60 L710 20 L190 20 Z"></path>
+<line x1="240" x2="660" y1="110" y2="110"></line>
+</g>
+<g opacity="0.35" stroke="#6b5334" stroke-width="1">
+<line x1="0" x2="900" y1="292" y2="292"></line>
+<line x1="0" x2="900" y1="270" y2="278"></line>
+</g>
+</svg>
+<div class="hero-eyebrow">Behind The Horror — Full Production Breakdown</div>
+<h1><img alt="赫" class="hero-title-icon" src="title.png"/><br/><span class="lang-en">Record of the <em>Anomaly</em></span> <span class="lang-ja"><em>異常</em>の記録</span></h1>
+<p class="lede"><span class="lang-en">The complete production process behind a first-person horror film blending Japanese aesthetics with POV horror. From concept art to sculpting, procedural generation, rendering optimization, compositing, and sound design — this document records the technical story behind the work, across six perspectives.</span> <span class="lang-ja">和風の美学と POV ホラーを掛け合わせた一人称ホラー映像の全制作工程。
         コンセプトアートから造形、プロシージャル生成、レンダリング最適化、コンポジット、
-        そして音響設計まで — 6 つの視点から本作の技術的な舞台裏を記録する。
-      </p>
-      <div class="scrolldown"><span>SCROLL</span><div class="line"></div></div>
-    </section>
-
-    <!-- ============ 01 パイプライン ============ -->
-    <section class="section" id="s1">
-      <div class="section-head">
-        <span class="section-num">01</span>
-        <span class="section-eyebrow">Pipeline Overview</span>
-      </div>
-      <h2>プロダクションパイプライン</h2>
-      <p class="section-intro">
-        本作は各工程において複数のソフトウェア・ミドルウェアを使用している。
+        そして音響設計まで — 6 つの視点から本作の技術的な舞台裏を記録する。</span></p>
+<div class="scrolldown"><span>SCROLL</span><div class="line"></div></div>
+</section>
+<!-- ============ 01 パイプライン ============ -->
+<section class="section" id="s1">
+<div class="section-head">
+<span class="section-num">01</span>
+<span class="section-eyebrow">Pipeline Overview</span>
+</div>
+<h2><span class="lang-en">Production Pipeline</span> <span class="lang-ja">プロダクションパイプライン</span></h2>
+<p class="section-intro"><span class="lang-en">This project uses multiple software packages and middleware tools across every stage of production — from Unreal Engine for real-time previews, to Maya, Blender, and Houdini for sculpting and simulation, through to NukeX, After Effects, and Premiere Pro for final finishing. <strong>At each stage, the tool best suited to the task was chosen deliberately, for a clear reason.</strong></span> <span class="lang-ja">本作は各工程において複数のソフトウェア・ミドルウェアを使用している。
         リアルタイムプレビューが可能な Unreal Engine から、造形・シミュレーションに特化した
         Maya / Blender / Houdini、そして仕上げの NukeX / After Effects / Premiere Pro まで、
-        <strong>それぞれの工程で最適なツールを選び、明確な理由をもって使い分けた</strong>。
-      </p>
-
-      <div class="subsection">
-        <h3>コンセプトアート <span class="tag">Unreal Engine 5.8</span></h3>
-        <p>
-          コンセプトアート制作は Unreal Engine 5.8 で行った。ここでのコンセプトアートは最終的な絵作りを決めるものというより、
-          モデルの雰囲気と作品の空気感をプレビューするためのものである。<br>
-          レンダリング速度を考慮し、Unreal Engine 5.8 を中心とするワークフローも検討したが、Blender Geometry Nodes を積極的に使用する方針を決めたため見送った。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/ue5_working.png" data-cap="UE5 作業光景">
-            <img src="img/ue5_working.png" alt="UE5 作業光景" loading="lazy">
-            <div class="cap">UE5 作業光景</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="subsection">
-        <h3>背景メイキング <span class="tag">Maya / Blender</span></h3>
-        <p>
-          背景メイキングは主に Autodesk Maya と Blender で行った。プロシージャルモデリングは
+        <strong>それぞれの工程で最適なツールを選び、明確な理由をもって使い分けた</strong>。</span></p>
+<div class="subsection">
+<h3><span class="lang-en">Concept Art</span> <span class="lang-ja">コンセプトアート</span> <span class="tag">Unreal Engine 5.8</span></h3>
+<p><span class="lang-en">Concept art was produced in Unreal Engine 5.8. Rather than locking in the final look, this concept art served to preview the mood of the models and the atmosphere of the piece.<br/>A workflow centered on Unreal Engine 5.8 was also considered for its rendering speed, but was ultimately set aside once the decision was made to make active use of Blender Geometry Nodes.</span> <span class="lang-ja">コンセプトアート制作は Unreal Engine 5.8 で行った。ここでのコンセプトアートは最終的な絵作りを決めるものというより、
+          モデルの雰囲気と作品の空気感をプレビューするためのものである。<br/>
+          レンダリング速度を考慮し、Unreal Engine 5.8 を中心とするワークフローも検討したが、Blender Geometry Nodes を積極的に使用する方針を決めたため見送った。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="UE5 — Working View" data-cap-ja="UE5 作業光景" data-full="img/ue5_working.png">
+<img alt="UE5 — Working View" data-alt-ja="UE5 作業光景" loading="lazy" src="img/ue5_working.png"/>
+<div class="cap"><span class="lang-en">UE5 — Working View</span> <span class="lang-ja">UE5 作業光景</span></div>
+</div>
+</div>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">Background Making</span> <span class="lang-ja">背景メイキング</span> <span class="tag">Maya / Blender</span></h3>
+<p><span class="lang-en">Background environments were built mainly in Autodesk Maya and Blender. Procedural modeling used <strong>Blender Geometry Nodes</strong>, while everything else was built entirely in <strong>Maya</strong>. The balance considered was between the flexibility of Geometry Nodes and the data precision of Maya. Final scene assembly and shooting were done in Blender, since Cycles and EEVEE were used, and work produced in Maya was handed over in FBX format.</span> <span class="lang-ja">背景メイキングは主に Autodesk Maya と Blender で行った。プロシージャルモデリングは
           <strong>Blender Geometry Nodes</strong>、それ以外はすべて <strong>Maya</strong> で制作している。
           考慮したのは Geometry Nodes の柔軟性と Maya のデータ厳密性のバランスである。
           最終的なシーンメイキングと撮影は Cycles と EEVEE を使うため Blender で行い、
-          Maya 制作物は FBX 形式で受け渡した。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/maya_wireframe_cyozu.png" data-cap="Maya ワイヤーフレーム — 手水台">
-            <img src="img/maya_wireframe_cyozu.png" alt="Maya ワイヤーフレーム 手水台" loading="lazy">
-            <div class="cap">Maya — 手水台 ワイヤーフレーム</div>
-          </div>
-          <div class="g-item" data-full="img/maya_wireframe_room.png" data-cap="Maya ワイヤーフレーム — 部屋">
-            <img src="img/maya_wireframe_room.png" alt="Maya ワイヤーフレーム 部屋" loading="lazy">
-            <div class="cap">Maya — 部屋 ワイヤーフレーム</div>
-          </div>
-          <div class="g-item" data-full="img/maya_wireframe_shrine.png" data-cap="Maya ワイヤーフレーム — 神社">
-            <img src="img/maya_wireframe_shrine.png" alt="Maya ワイヤーフレーム 神社" loading="lazy">
-            <div class="cap">Maya — 神社 ワイヤーフレーム</div>
-          </div>
-          <div class="g-item" data-full="img/blender_working.png" data-cap="Blender 作業画面">
-            <img src="img/blender_working.png" alt="Blender 作業画面" loading="lazy">
-            <div class="cap">Blender 作業画面</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="subsection">
-        <h3>テクスチャ制作 <span class="tag">Substance 3D Painter / Sampler</span></h3>
-        <p>
-          テクスチャ制作は主に Substance 3D Painter で行った。Maya で UV 展開したモデルを塗り、
+          Maya 制作物は FBX 形式で受け渡した。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="Maya — Water Basin Wireframe" data-cap-ja="Maya ワイヤーフレーム — 手水台" data-full="img/maya_wireframe_cyozu.png">
+<img alt="Maya — Water Basin Wireframe" data-alt-ja="Maya ワイヤーフレーム 手水台" loading="lazy" src="img/maya_wireframe_cyozu.png"/>
+<div class="cap"><span class="lang-en">Maya — Water Basin Wireframe</span> <span class="lang-ja">Maya — 手水台 ワイヤーフレーム</span></div>
+</div>
+<div class="g-item" data-cap="Maya — Room Wireframe" data-cap-ja="Maya ワイヤーフレーム — 部屋" data-full="img/maya_wireframe_room.png">
+<img alt="Maya — Room Wireframe" data-alt-ja="Maya ワイヤーフレーム 部屋" loading="lazy" src="img/maya_wireframe_room.png"/>
+<div class="cap"><span class="lang-en">Maya — Room Wireframe</span> <span class="lang-ja">Maya — 部屋 ワイヤーフレーム</span></div>
+</div>
+<div class="g-item" data-cap="Maya — Shrine Wireframe" data-cap-ja="Maya ワイヤーフレーム — 神社" data-full="img/maya_wireframe_shrine.png">
+<img alt="Maya — Shrine Wireframe" data-alt-ja="Maya ワイヤーフレーム 神社" loading="lazy" src="img/maya_wireframe_shrine.png"/>
+<div class="cap"><span class="lang-en">Maya — Shrine Wireframe</span> <span class="lang-ja">Maya — 神社 ワイヤーフレーム</span></div>
+</div>
+<div class="g-item" data-cap="Blender Working View" data-cap-ja="Blender 作業画面" data-full="img/blender_working.png">
+<img alt="Blender Working View" data-alt-ja="Blender 作業画面" loading="lazy" src="img/blender_working.png"/>
+<div class="cap"><span class="lang-en">Blender Working View</span> <span class="lang-ja">Blender 作業画面</span></div>
+</div>
+</div>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">Texture Production</span> <span class="lang-ja">テクスチャ制作</span> <span class="tag">Substance 3D Painter / Sampler</span></h3>
+<p><span class="lang-en">Texture work was done mainly in Substance 3D Painter. Models UV-unwrapped in Maya were painted and exported as high-precision 4K textures. For large-scale objects or ones seen in close-up — such as the main shrine hall or the water basin — a <strong>UDIM tile workflow</strong> was used to preserve resolution. Textures for natural objects were produced by processing our own 3D surface scan data in Substance 3D Sampler.</span> <span class="lang-ja">テクスチャ制作は主に Substance 3D Painter で行った。Maya で UV 展開したモデルを塗り、
           4K 高精度テクスチャとして書き出している。神社本殿や手水など規模が大きい、あるいはクローズアップのあるオブジェクトは
           <strong>UDIM タイルワークフロー</strong>を採用し解像度を確保した。自然物のテクスチャは独自の 3D 表面スキャンデータを
-          Substance 3D Sampler で処理したものである。
-        </p>
-      </div>
-
-      <div class="subsection">
-        <h3>クリーチャー制作 <span class="tag">Blender / Marvelous Designer / VRoid Studio</span></h3>
-        <p>
-          クリーチャー（バケモノキャラクター）は Blender のほか、Marvelous Designer と VRoid Studio を用いた。
+          Substance 3D Sampler で処理したものである。</span></p>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">Creature Production</span> <span class="lang-ja">クリーチャー制作</span> <span class="tag">Blender / Marvelous Designer / VRoid Studio</span></h3>
+<p><span class="lang-en">The creature (the monster character) was built using Blender alongside Marvelous Designer and VRoid Studio. Since the character’s body itself is barely visible in the final footage and mainly exists as a collision target for cloth simulation, <span class="highlight">a highly detailed custom model was judged unnecessary</span>, so a base body was instead generated in VRoid Studio. The head was sculpted in Blender’s Sculpt Mode, and the spider lilies (higanbana) were generated procedurally with Geometry Nodes.</span> <span class="lang-ja">クリーチャー（バケモノキャラクター）は Blender のほか、Marvelous Designer と VRoid Studio を用いた。
           最終映像でキャラクターの身体自体はほとんど映らず、あくまでクロスシミュレーションのコリジョン対象であるため、
           <span class="highlight">高度な独自モデルは不要と判断し</span> VRoid Studio で素体を生成するアプローチを採った。
-          頭部は Blender のスカルプトモードで制作し、彼岸花はジオメトリノードでプロシージャルに生成している。
-        </p>
-        <p>
-          リギングとアニメーションを Blender で行った後、Alembic 形式で Marvelous Designer にインポートして衣装のクロス演算を実行。
-          結果をモデルにベイクし、再び Alembic で Blender に戻して撮影した。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/cloth_unsim.png" data-cap="Marvelous Designer — 型紙">
-            <img src="img/cloth_unsim.png" alt="MD 型紙の画面" loading="lazy">
-            <div class="cap">MD — 型紙（未シミュレーション）</div>
-          </div>
-          <div class="g-item" data-full="img/cloth_sim.png" data-cap="Marvelous Designer — シミュレーション済み">
-            <img src="img/cloth_sim.png" alt="MD シミュレーション済みの画面" loading="lazy">
-            <div class="cap">MD — クロスシミュレーション済み</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="callout">
-        <span class="label">Tool Decision</span>
-        タイトル画面のインクエフェクトは、リアルな流体シミュレーションと細かい調整のしやすさから <strong>Houdini</strong> を採用した（詳細は 03-b）。
-      </div>
-
-      <div class="subsection">
-        <h3>撮影〜コンポジット〜編集 <span class="tag">Blender → NukeX → After Effects → Premiere Pro</span></h3>
-        <p>
-          Blender でカメラ・ボーンアニメーションを設定し、出力パスをコンポジットノードで定義、
+          頭部は Blender のスカルプトモードで制作し、彼岸花はジオメトリノードでプロシージャルに生成している。</span></p>
+<p><span class="lang-en">After rigging and animation were done in Blender, the data was imported into Marvelous Designer via Alembic to run cloth simulation on the costume. The result was baked onto the model and brought back into Blender via Alembic once again for shooting.</span> <span class="lang-ja">リギングとアニメーションを Blender で行った後、Alembic 形式で Marvelous Designer にインポートして衣装のクロス演算を実行。
+          結果をモデルにベイクし、再び Alembic で Blender に戻して撮影した。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="MD — Pattern (Pre-Simulation)" data-cap-ja="Marvelous Designer — 型紙" data-full="img/cloth_unsim.png">
+<img alt="MD — Pattern (Pre-Simulation)" data-alt-ja="MD 型紙の画面" loading="lazy" src="img/cloth_unsim.png"/>
+<div class="cap"><span class="lang-en">MD — Pattern (Pre-Simulation)</span> <span class="lang-ja">MD — 型紙（未シミュレーション）</span></div>
+</div>
+<div class="g-item" data-cap="MD — Cloth Simulated" data-cap-ja="Marvelous Designer — シミュレーション済み" data-full="img/cloth_sim.png">
+<img alt="MD — Cloth Simulated" data-alt-ja="MD シミュレーション済みの画面" loading="lazy" src="img/cloth_sim.png"/>
+<div class="cap"><span class="lang-en">MD — Cloth Simulated</span> <span class="lang-ja">MD — クロスシミュレーション済み</span></div>
+</div>
+</div>
+</div>
+<div class="callout"><span class="label">Tool Decision</span>
+          <span class="lang-en">For the ink effect on the title screen, <strong>Houdini</strong> was chosen for its realistic fluid simulation and ease of fine-tuning (see 03-b for details).</span> <span class="lang-ja">タイトル画面のインクエフェクトは、リアルな流体シミュレーションと細かい調整のしやすさから <strong>Houdini</strong> を採用した（詳細は 03-b）。</span></div>
+<div class="subsection">
+<h3><span class="lang-en">Shooting → Compositing → Editing</span> <span class="lang-ja">撮影〜コンポジット〜編集</span> <span class="tag">Blender → NukeX → After Effects → Premiere Pro</span></h3>
+<p><span class="lang-en">Camera and bone animation were set up in Blender, output passes were defined via compositing nodes, and everything was exported in <strong>multi-layer OpenEXR</strong> format — valued for being able to store a large number of passes in a single file. The exported render data was composited in NukeX, exported as 16-bit PNG, and then fine-tuned for pacing in Adobe After Effects, chosen because <span class="highlight">it handles linear timeline editing better than NukeX</span>. The final export used visually lossless Apple ProRes 4444 XQ, with final editing done in Adobe Premiere Pro.</span> <span class="lang-ja">Blender でカメラ・ボーンアニメーションを設定し、出力パスをコンポジットノードで定義、
           <strong>Multi-layer OpenEXR</strong> 形式で出力した。大量のパスを同一ファイルに格納できる点を評価している。
           書き出されたレンダリングデータは NukeX で合成し、16-bit PNG で書き出したのち
           Adobe After Effects でテンポなどを微調整した。<span class="highlight">NukeX よりも線形的なタイム編集が得意</span>な点が採用理由である。
-          最終的に視覚的無劣化の Apple ProRes 4444 XQ で書き出し、Adobe Premiere Pro で最終編集を行った。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/after_Effects.png" data-cap="After Effects 作業画面">
-            <img src="img/after_Effects.png" alt="AE 作業画面" loading="lazy">
-            <div class="cap">Adobe After Effects 作業画面</div>
-          </div>
-          <div class="g-item" data-full="img/premiere_pro.png" data-cap="Premiere Pro 作業画面">
-            <img src="img/premiere_pro.png" alt="Pr 作業画面" loading="lazy">
-            <div class="cap">Adobe Premiere Pro 作業画面</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="subsection">
-        <h3>音響 <span class="tag">REAPER / Audacity / Adobe Audition / dearVR Pro 2</span></h3>
-        <p>
-          音響は軽量さと柔軟性を考慮し DAW として REAPER を採用、オートメーション・ミキシング・マスタリングを行った。
+          最終的に視覚的無劣化の Apple ProRes 4444 XQ で書き出し、Adobe Premiere Pro で最終編集を行った。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="Adobe After Effects Working View" data-cap-ja="After Effects 作業画面" data-full="img/after_Effects.png">
+<img alt="Adobe After Effects Working View" data-alt-ja="AE 作業画面" loading="lazy" src="img/after_Effects.png"/>
+<div class="cap"><span class="lang-en">Adobe After Effects Working View</span> <span class="lang-ja">Adobe After Effects 作業画面</span></div>
+</div>
+<div class="g-item" data-cap="Adobe Premiere Pro Working View" data-cap-ja="Premiere Pro 作業画面" data-full="img/premiere_pro.png">
+<img alt="Adobe Premiere Pro Working View" data-alt-ja="Pr 作業画面" loading="lazy" src="img/premiere_pro.png"/>
+<div class="cap"><span class="lang-en">Adobe Premiere Pro Working View</span> <span class="lang-ja">Adobe Premiere Pro 作業画面</span></div>
+</div>
+</div>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">Sound</span> <span class="lang-ja">音響</span> <span class="tag">REAPER / Audacity / Adobe Audition / dearVR Pro 2</span></h3>
+<p><span class="lang-en">For audio, REAPER was chosen as the DAW for its lightness and flexibility, and used for automation, mixing, and mastering. Audacity handled basic waveform editing, while Adobe Audition was used for denoising and syncing audio to picture. The dearVR Pro 2 plugin was adopted to add depth and spatial believability to the sound (see Chapter 06 for details).</span> <span class="lang-ja">音響は軽量さと柔軟性を考慮し DAW として REAPER を採用、オートメーション・ミキシング・マスタリングを行った。
           初歩的な波形編集は Audacity、デノイズ処理や映像とのタイミング合わせには Adobe Audition を使用。
-          音声の奥行き感と空間的な説得力を上げるため dearVR Pro 2 プラグインを採用している（詳細は 06 章）。
-        </p>
-      </div>
-    </section>
-
-    <div class="divider">
-      <div class="dline"></div>
-      <svg viewBox="0 0 100 100"><path d="M50 15 C58 30,75 32,68 48 C90 52,90 68,68 72 C74 88,58 96,50 84 C42 96,26 88,32 72 C10 68,10 52,32 48 C25 32,42 30,50 15 Z" fill="none" stroke="#a9865a" stroke-width="1.4"/></svg>
-      <div class="dline"></div>
-    </div>
-
-    <!-- ============ 02 美術・造形とルックデヴ ============ -->
-    <section class="section" id="s2">
-      <div class="section-head">
-        <span class="section-num">02</span>
-        <span class="section-eyebrow">Art, Sculpting & Look Dev</span>
-      </div>
-      <h2>美術、造形とルックデヴ</h2>
-      <p class="section-intro">
-        本作は「日常における非日常」による「驚きの演出」を、ホラーの「異常存在の日常空間への侵入」と解釈し、
-        <strong>和風の美学を生かした POV ホラー</strong>を制作方針とした。
-      </p>
-
-      <div class="subsection">
-        <h3>a. コンセプトアート</h3>
-        <p>
-          モデルの雰囲気と作品の空気感をプレビューするための土台として、01 章で紹介した Unreal Engine による
-          リアルタイムコンセプトアートが、以下の素材制作・演出設計すべての起点となっている。
-        </p>
-      </div>
-
-      <div class="subsection">
-        <h3>b. 素材</h3>
-        <p>
-          独自の美術スタイルを想定通りに再現するため、本制作では<span class="highlight">フリー素材など既製の配布物の二次使用をなるべく避けた</span>。
+          音声の奥行き感と空間的な説得力を上げるため dearVR Pro 2 プラグインを採用している（詳細は 06 章）。</span></p>
+</div>
+</section>
+<div class="divider">
+<div class="dline"></div>
+<svg viewBox="0 0 100 100"><path d="M50 15 C58 30,75 32,68 48 C90 52,90 68,68 72 C74 88,58 96,50 84 C42 96,26 88,32 72 C10 68,10 52,32 48 C25 32,42 30,50 15 Z" fill="none" stroke="#a9865a" stroke-width="1.4"></path></svg>
+<div class="dline"></div>
+</div>
+<!-- ============ 02 美術・造形とルックデヴ ============ -->
+<section class="section" id="s2">
+<div class="section-head">
+<span class="section-num">02</span>
+<span class="section-eyebrow">Art, Sculpting &amp; Look Dev</span>
+</div>
+<h2><span class="lang-en">Art, Sculpting &amp; Look Dev</span> <span class="lang-ja">美術、造形とルックデヴ</span></h2>
+<p class="section-intro"><span class="lang-en">This work interprets horror’s core device — “an abnormal presence intruding on everyday space” — as a way of staging surprise through “the extraordinary within the ordinary,” and was built around the guiding principle of <strong>POV horror grounded in Japanese aesthetics</strong>.</span> <span class="lang-ja">本作は「日常における非日常」による「驚きの演出」を、ホラーの「異常存在の日常空間への侵入」と解釈し、
+        <strong>和風の美学を生かした POV ホラー</strong>を制作方針とした。</span></p>
+<div class="subsection">
+<h3><span class="lang-en">a. Concept Art</span> <span class="lang-ja">a. コンセプトアート</span></h3>
+<p><span class="lang-en">As a foundation for previewing the mood of the models and the atmosphere of the piece, the real-time concept art produced in Unreal Engine, introduced in Chapter 01, was the starting point for all of the material production and direction design described below.</span> <span class="lang-ja">モデルの雰囲気と作品の空気感をプレビューするための土台として、01 章で紹介した Unreal Engine による
+          リアルタイムコンセプトアートが、以下の素材制作・演出設計すべての起点となっている。</span></p>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">b. Materials</span> <span class="lang-ja">b. 素材</span></h3>
+<p><span class="lang-en">To faithfully reproduce a distinctive art style, this production <span class="highlight">avoided reusing off-the-shelf distributed assets such as free packs wherever possible</span>. Textures for man-made objects were hand-painted in Substance 3D Painter, while natural objects were surface-scanned and processed in Substance 3D Sampler for seam removal and normal adjustment. Organic textures that are hard to reproduce in reality were generated procedurally in Substance 3D Designer. The fallen leaves are the result of scanning real leaves gathered by hand, applying them to flat polygons, and running rigid-body simulation.</span> <span class="lang-ja">独自の美術スタイルを想定通りに再現するため、本制作では<span class="highlight">フリー素材など既製の配布物の二次使用をなるべく避けた</span>。
           人工物のテクスチャは Substance 3D Painter で手描きし、自然物はサーフェススキャンを行い Substance 3D Sampler で
           シーム除去や法線調整を施した。現実で再現しにくい有機物のテクスチャは Substance 3D Designer でプロシージャルに生成している。
-          葉っぱは実際に拾った落ち葉をスキャナーでスキャンし、板ポリゴンに付与した上で剛体物理演算を行った結果である。
-        </p>
-        <p>
-          なお BlenderKit や Poly Haven のフリー素材を使用した場合は、以下のカスタム化を行った：
-        </p>
-        <ul class="tech-list">
-          <li><strong>シェーダーによるカラー調整</strong>テクスチャをそのまま使わず、Blender のシェーダーノードで色調整を施し、複数テクスチャをブレンドして使用した。</li>
-          <li><strong>距離ベースの LOD</strong>木などの背景物は Geometry Nodes でカメラ距離に基づく LOD システムを構築し、画面のポリゴン数を削減した。</li>
-        </ul>
-        <p>
-          音効についても、フリー BGM・効果音の調整に加え、ZOOM V3 マイクを用いた立体音声収録を行った。
-          実際の山の鳥の鳴き声を収録し調整・混合することで、臨場感のあるアンビエント体験を目指した。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/substance_sampler_surface1.png" data-cap="Substance Sampler — サーフェス処理 1"><img src="img/substance_sampler_surface1.png" alt="Substance Sampler サーフェス1" loading="lazy"><div class="cap">Sampler — スキャンサーフェス 1</div></div>
-          <div class="g-item" data-full="img/substance_sampler_surface2.png" data-cap="Substance Sampler — サーフェス処理 2"><img src="img/substance_sampler_surface2.png" alt="Substance Sampler サーフェス2" loading="lazy"><div class="cap">Sampler — スキャンサーフェス 2</div></div>
-          <div class="g-item" data-full="img/substance_sampler_surface3.png" data-cap="Substance Sampler — サーフェス処理 3"><img src="img/substance_sampler_surface3.png" alt="Substance Sampler サーフェス3" loading="lazy"><div class="cap">Sampler — スキャンサーフェス 3</div></div>
-          <div class="g-item" data-full="img/substance_sampler_surface4.png" data-cap="Substance Sampler — サーフェス処理 4"><img src="img/substance_sampler_surface4.png" alt="Substance Sampler サーフェス4" loading="lazy"><div class="cap">Sampler — スキャンサーフェス 4</div></div>
-          <div class="g-item" data-full="img/substance_sampler_beef.png" data-cap="Substance Sampler — 牛肉スキャン"><img src="img/substance_sampler_beef.png" alt="Substance Sampler 牛肉スキャン" loading="lazy"><div class="cap">Sampler — 生体組織スキャン</div></div>
-          <div class="g-item" data-full="img/substance_painter_shrine.png" data-cap="Substance Painter 作業画面"><img src="img/substance_painter_shrine.png" alt="SP 作業画面" loading="lazy"><div class="cap">Substance Painter 作業画面</div></div>
-        </div>
-      </div>
-
-      <div class="subsection">
-        <h3>c. 演出 <span class="tag">Camera / Omniscient</span></h3>
-        <p>
-          本作は POV ホラーであり、一人称視点のカメラワークをとる。カメラをいかにキャラクターの目のように調整し、
-          没入感・臨場感を高めるかが重要であった。
-        </p>
-        <p>
-          現実のカメラワークを参考にするため、鳥居前に長い階段があり「階段神社」とも呼ばれる福岡県岡垣町の白峯神社でロケハンを実施。
+          葉っぱは実際に拾った落ち葉をスキャナーでスキャンし、板ポリゴンに付与した上で剛体物理演算を行った結果である。</span></p>
+<p><span class="lang-en">That said, whenever free assets from BlenderKit or Poly Haven were used, the following customizations were applied:</span> <span class="lang-ja">なお BlenderKit や Poly Haven のフリー素材を使用した場合は、以下のカスタム化を行った：</span></p>
+<ul class="tech-list">
+<li><span class="lang-en"><strong>Shader-based color adjustment</strong> — rather than using textures as-is, color was adjusted through Blender shader nodes, blending multiple textures together.</span> <span class="lang-ja"><strong>シェーダーによるカラー調整</strong>テクスチャをそのまま使わず、Blender のシェーダーノードで色調整を施し、複数テクスチャをブレンドして使用した。</span></li>
+<li><span class="lang-en"><strong>Distance-based LOD</strong> — for background objects like trees, a distance-based LOD system was built with Geometry Nodes to reduce on-screen polygon count.</span> <span class="lang-ja"><strong>距離ベースの LOD</strong>木などの背景物は Geometry Nodes でカメラ距離に基づく LOD システムを構築し、画面のポリゴン数を削減した。</span></li>
+</ul>
+<p><span class="lang-en">For sound as well, in addition to adjusting free BGM and sound effects, stereo field recordings were made using a ZOOM V3 microphone. Real birdsong recorded in the mountains was mixed and adjusted to aim for an immersive ambient experience.</span> <span class="lang-ja">音効についても、フリー BGM・効果音の調整に加え、ZOOM V3 マイクを用いた立体音声収録を行った。
+          実際の山の鳥の鳴き声を収録し調整・混合することで、臨場感のあるアンビエント体験を目指した。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="Sampler — Scanned Surface 1" data-cap-ja="Substance Sampler — サーフェス処理 1" data-full="img/substance_sampler_surface1.png"><img alt="Sampler — Scanned Surface 1" data-alt-ja="Substance Sampler サーフェス1" loading="lazy" src="img/substance_sampler_surface1.png"/><div class="cap"><span class="lang-en">Sampler — Scanned Surface 1</span> <span class="lang-ja">Sampler — スキャンサーフェス 1</span></div></div>
+<div class="g-item" data-cap="Sampler — Scanned Surface 2" data-cap-ja="Substance Sampler — サーフェス処理 2" data-full="img/substance_sampler_surface2.png"><img alt="Sampler — Scanned Surface 2" data-alt-ja="Substance Sampler サーフェス2" loading="lazy" src="img/substance_sampler_surface2.png"/><div class="cap"><span class="lang-en">Sampler — Scanned Surface 2</span> <span class="lang-ja">Sampler — スキャンサーフェス 2</span></div></div>
+<div class="g-item" data-cap="Sampler — Scanned Surface 3" data-cap-ja="Substance Sampler — サーフェス処理 3" data-full="img/substance_sampler_surface3.png"><img alt="Sampler — Scanned Surface 3" data-alt-ja="Substance Sampler サーフェス3" loading="lazy" src="img/substance_sampler_surface3.png"/><div class="cap"><span class="lang-en">Sampler — Scanned Surface 3</span> <span class="lang-ja">Sampler — スキャンサーフェス 3</span></div></div>
+<div class="g-item" data-cap="Sampler — Scanned Surface 4" data-cap-ja="Substance Sampler — サーフェス処理 4" data-full="img/substance_sampler_surface4.png"><img alt="Sampler — Scanned Surface 4" data-alt-ja="Substance Sampler サーフェス4" loading="lazy" src="img/substance_sampler_surface4.png"/><div class="cap"><span class="lang-en">Sampler — Scanned Surface 4</span> <span class="lang-ja">Sampler — スキャンサーフェス 4</span></div></div>
+<div class="g-item" data-cap="Sampler — Biological Tissue Scan" data-cap-ja="Substance Sampler — 牛肉スキャン" data-full="img/substance_sampler_beef.png"><img alt="Sampler — Biological Tissue Scan" data-alt-ja="Substance Sampler 牛肉スキャン" loading="lazy" src="img/substance_sampler_beef.png"/><div class="cap"><span class="lang-en">Sampler — Biological Tissue Scan</span> <span class="lang-ja">Sampler — 生体組織スキャン</span></div></div>
+<div class="g-item" data-cap="Substance Painter Working View" data-cap-ja="Substance Painter 作業画面" data-full="img/substance_painter_shrine.png"><img alt="Substance Painter Working View" data-alt-ja="SP 作業画面" loading="lazy" src="img/substance_painter_shrine.png"/><div class="cap"><span class="lang-en">Substance Painter Working View</span> <span class="lang-ja">Substance Painter 作業画面</span></div></div>
+</div>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">c. Direction &amp; Camera Work</span> <span class="lang-ja">c. 演出</span> <span class="tag">Camera / Omniscient</span></h3>
+<p><span class="lang-en">This work is POV horror and uses first-person camera work throughout. The key challenge was how to make the camera feel like the character’s own eyes, in order to heighten immersion and presence.</span> <span class="lang-ja">本作は POV ホラーであり、一人称視点のカメラワークをとる。カメラをいかにキャラクターの目のように調整し、
+          没入感・臨場感を高めるかが重要であった。</span></p>
+<p><span class="lang-en">To reference real camera movement, a location scout was carried out at Shiromine Shrine in Okagaki, Fukuoka Prefecture — known as the “stairway shrine” for its long staircase leading up to the torii gate. Virtual camera footage and tracking were captured using the Omniscient app and a smartphone chest mount, then imported into Blender via Alembic as a reference for camera motion.</span> <span class="lang-ja">現実のカメラワークを参考にするため、鳥居前に長い階段があり「階段神社」とも呼ばれる福岡県岡垣町の白峯神社でロケハンを実施。
           Omniscient アプリとスマートフォン用チェストマウントを用いてバーチャルカメラ撮影とトラッキングを行い、
-          Alembic 形式で Blender にインポートしてカメラの動きの参考にした。
-        </p>
-        <p>
-          ただしトラッキングされたカメラワークは揺れや想定外の振動が激しく、そのままの使用は断念。
+          Alembic 形式で Blender にインポートしてカメラの動きの参考にした。</span></p>
+<p><span class="lang-en">However, the tracked camera data contained too much shake and unexpected vibration to use directly, so that approach was abandoned. Instead, a simple humanoid rig was built and the camera parented to its head to recreate first-person camera work. Broad movement was created with bone animation, and a noise modifier reproduced natural handheld shake. In scenes with heavy vertical motion on the stairs, noise was also applied to Z-axis movement.</span> <span class="lang-ja">ただしトラッキングされたカメラワークは揺れや想定外の振動が激しく、そのままの使用は断念。
           代わりに簡易な人型リグを構築し、カメラを頭部に親づけすることで一人称カメラワークを再現した。
           ボーンアニメーションで大まかな移動を作り、ノイズモディファイアで自然な手ブレを再現。
-          階段の上下運動が激しいシーンでは Z 軸移動にもノイズを適用した。
-        </p>
-        <div class="gallery g-wide">
-          <div class="g-item" data-full="img/rig_for_camera.png" data-cap="カメラ用の簡易人型リグ"><img src="img/rig_for_camera.png" alt="カメラ用リグ" loading="lazy"><div class="cap">カメラ用 簡易人型リグ</div></div>
-        </div>
-      </div>
-
-      <div class="subsection">
-        <h3>d. クリーチャー造形</h3>
-        <p>
-          説得力のある恐怖感のためには、バケモノキャラクターの造形が非常に重要である。本作は単なる恐怖だけでなく
-          和風の美学と空気感も重んじるため、<span class="highlight">「グロテスクの中に美しさ」</span>という一見矛盾する概念を造形する必要があった。
-        </p>
-        <p>
-          発想法は主に色に基づく連想である。ホラーらしい肉々しい生体組織の赤に、不吉や死を連想させる彼岸花を合わせた。
+          階段の上下運動が激しいシーンでは Z 軸移動にもノイズを適用した。</span></p>
+<div class="gallery g-wide">
+<div class="g-item" data-cap="Simple Humanoid Rig for Camera" data-cap-ja="カメラ用の簡易人型リグ" data-full="img/rig_for_camera.png"><img alt="Simple Humanoid Rig for Camera" data-alt-ja="カメラ用リグ" loading="lazy" src="img/rig_for_camera.png"/><div class="cap"><span class="lang-en">Simple Humanoid Rig for Camera</span> <span class="lang-ja">カメラ用 簡易人型リグ</span></div></div>
+</div>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">d. Creature Design</span> <span class="lang-ja">d. クリーチャー造形</span></h3>
+<p><span class="lang-en">For the horror to feel convincing, the design of the monster character was critical. Since this work values Japanese aesthetics and atmosphere as much as horror itself, it needed to embody the seemingly contradictory concept of <span class="highlight">“beauty within the grotesque.”</span></span> <span class="lang-ja">説得力のある恐怖感のためには、バケモノキャラクターの造形が非常に重要である。本作は単なる恐怖だけでなく
+          和風の美学と空気感も重んじるため、<span class="highlight">「グロテスクの中に美しさ」</span>という一見矛盾する概念を造形する必要があった。</span></p>
+<p><span class="lang-en">The design approach was based mainly on color association. The fleshy red of horror-appropriate biological tissue was paired with spider lilies (higanbana), flowers associated with death and bad omens. Red wood was placed around the face to add a sense of Japanese gravitas. The costume uses a shrine maiden’s outfit, aiming for the shock of “an ordinary miko from behind, but a horrifying monster the moment she turns around.”</span> <span class="lang-ja">発想法は主に色に基づく連想である。ホラーらしい肉々しい生体組織の赤に、不吉や死を連想させる彼岸花を合わせた。
           さらに顔まわりを赤い木で囲み、和風の重みを演出。服装には神社の巫女服を採用し、
-          「後ろから見れば普通の巫女だが、振り返ったらおぞましいバケモノ」という驚きの演出を狙った。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/character_face.png" data-cap="バケモノの顔 グレイモデル"><img src="img/character_face.png" alt="バケモノ顔グレイモデル" loading="lazy"><div class="cap">顔 — グレイモデル</div></div>
-          <div class="g-item" data-full="img/character_body.png" data-cap="バケモノの体 グレイモデル"><img src="img/character_body.png" alt="バケモノ体グレイモデル" loading="lazy"><div class="cap">体 — グレイモデル</div></div>
-          <div class="g-item" data-full="img/character_face_rendered.png" data-cap="バケモノの顔 完成図"><img src="img/character_face_rendered.png" alt="バケモノ顔完成図" loading="lazy"><div class="cap">顔 — レンダリング完成図</div></div>
-        </div>
-      </div>
-    </section>
-
-    <div class="divider">
-      <div class="dline"></div>
-      <svg viewBox="0 0 100 100"><path d="M50 15 C58 30,75 32,68 48 C90 52,90 68,68 72 C74 88,58 96,50 84 C42 96,26 88,32 72 C10 68,10 52,32 48 C25 32,42 30,50 15 Z" fill="none" stroke="#a9865a" stroke-width="1.4"/></svg>
-      <div class="dline"></div>
-    </div>
-    <!-- ============ 03 プロシージャル生成 ============ -->
-    <section class="section" id="s3">
-      <div class="section-head">
-        <span class="section-num">03</span>
-        <span class="section-eyebrow">Procedural Generation</span>
-      </div>
-      <h2>プロシージャル生成</h2>
-      <p class="section-intro">
-        アセットを柔軟に修正・再利用するため、Blender Geometry Nodes をはじめとするプロシージャルモデリングを積極的に採用した。
-        使い捨てではなく、<strong>今後の制作にも活かせる汎用性のあるアセット資産</strong>を目指している。
-      </p>
-
-      <div class="subsection">
-        <h3>a. Blender Geometry Nodes</h3>
-        <p>
-          本制作で構築したジオメトリノードシステムは <strong>7 種類</strong>。すべて汎用性を持ち、
-          本制作以外にも活用できると考え、Gumroad にフリーアセットとして公開予定である。
-        </p>
-        <p>
-          プロシージャル生成により、微調整・バリエーション作り・大量配置の手間を省き、リアルタイムフィードバックで
+          「後ろから見れば普通の巫女だが、振り返ったらおぞましいバケモノ」という驚きの演出を狙った。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="Face — Grey Model" data-cap-ja="バケモノの顔 グレイモデル" data-full="img/character_face.png"><img alt="Face — Grey Model" data-alt-ja="バケモノ顔グレイモデル" loading="lazy" src="img/character_face.png"/><div class="cap"><span class="lang-en">Face — Grey Model</span> <span class="lang-ja">顔 — グレイモデル</span></div></div>
+<div class="g-item" data-cap="Body — Grey Model" data-cap-ja="バケモノの体 グレイモデル" data-full="img/character_body.png"><img alt="Body — Grey Model" data-alt-ja="バケモノ体グレイモデル" loading="lazy" src="img/character_body.png"/><div class="cap"><span class="lang-en">Body — Grey Model</span> <span class="lang-ja">体 — グレイモデル</span></div></div>
+<div class="g-item" data-cap="Face — Final Render" data-cap-ja="バケモノの顔 完成図" data-full="img/character_face_rendered.png"><img alt="Face — Final Render" data-alt-ja="バケモノ顔完成図" loading="lazy" src="img/character_face_rendered.png"/><div class="cap"><span class="lang-en">Face — Final Render</span> <span class="lang-ja">顔 — レンダリング完成図</span></div></div>
+</div>
+</div>
+</section>
+<div class="divider">
+<div class="dline"></div>
+<svg viewBox="0 0 100 100"><path d="M50 15 C58 30,75 32,68 48 C90 52,90 68,68 72 C74 88,58 96,50 84 C42 96,26 88,32 72 C10 68,10 52,32 48 C25 32,42 30,50 15 Z" fill="none" stroke="#a9865a" stroke-width="1.4"></path></svg>
+<div class="dline"></div>
+</div>
+<!-- ============ 03 プロシージャル生成 ============ -->
+<section class="section" id="s3">
+<div class="section-head">
+<span class="section-num">03</span>
+<span class="section-eyebrow">Procedural Generation</span>
+</div>
+<h2><span class="lang-en">Procedural Generation</span> <span class="lang-ja">プロシージャル生成</span></h2>
+<p class="section-intro"><span class="lang-en">To keep assets flexible to edit and reuse, procedural modeling — centered on Blender Geometry Nodes — was adopted extensively throughout production. Rather than disposable, single-use assets, the goal was <strong>versatile asset resources that can also serve future productions</strong>.</span> <span class="lang-ja">アセットを柔軟に修正・再利用するため、Blender Geometry Nodes をはじめとするプロシージャルモデリングを積極的に採用した。
+        使い捨てではなく、<strong>今後の制作にも活かせる汎用性のあるアセット資産</strong>を目指している。</span></p>
+<div class="subsection">
+<h3><span class="lang-en">a. Blender Geometry Nodes</span> <span class="lang-ja">a. Blender Geometry Nodes</span></h3>
+<p><span class="lang-en">This production built <strong>seven distinct Geometry Nodes systems</strong>. Since all of them are general-purpose and usable beyond this project, they are planned for release as free assets on Gumroad.</span> <span class="lang-ja">本制作で構築したジオメトリノードシステムは <strong>7 種類</strong>。すべて汎用性を持ち、
+          本制作以外にも活用できると考え、Gumroad にフリーアセットとして公開予定である。</span></p>
+<p><span class="lang-en">Procedural generation removed much of the manual work of fine-tuning, creating variations, and mass placement, and real-time feedback greatly sped up the look-dev iteration cycle. As a development practice, every Geometry Nodes system was built in a separate file from the main project file, for three reasons: avoiding unintended changes, saving load time for the huge main file, and preserving the independence and reusability of the assets.</span> <span class="lang-ja">プロシージャル生成により、微調整・バリエーション作り・大量配置の手間を省き、リアルタイムフィードバックで
           ルックデヴのイテレーション速度が大きく向上した。開発の工夫として、すべての Geometry Nodes を
           メインプロジェクトファイルとは別ファイルで開発している。理由は、意図せぬ変化の回避・巨大ファイルの読み込み時間の節約・
-          アセットの独立性と再利用性の確保の三点である。
-        </p>
-        <ul class="tech-list">
-          <li><strong>彼岸花生成</strong>完全プロシージャルに彼岸花を生成。花びらをカーブで定義し、曲率をべき関数で制御することで柔軟な造形を実現。インスタンス複製でレイヤーを作り、球体へのスナップで中心部のシベをリアルに造形した。</li>
-          <li><strong>波紋生成</strong>最後の部屋シーンで木製の床が液体化し波紋が広がる表現。頂点オフセットと三角関数で作り、Z 軸の微弱なノイズで有機感を出した。</li>
-          <li><strong>水中拡散</strong>床が液体化し血液が広がるシーンをジオメトリ／シェーダーノード併用で制作。波紋中心までの距離をジオメトリノードで計算し float 属性としてシェーダーに渡すことで拡散と混合を実現。</li>
-          <li><strong>カメラ LOD</strong>パフォーマンス改善のため、カメラからの方角と距離に基づいて異なる LOD の木モデルを配置。</li>
-          <li><strong>階段生成</strong>傾斜率・段数・各段の高さ・横幅などをリアルタイムで調整・評価できるノードグラフを構築し、背景調整が非常にスムーズになった。</li>
-          <li><strong>侵食表現</strong>部屋の壁が赤い生体組織に侵食されるシーン。頂点グループを動的に定義しディスプレースメントを動的適用。頂点グループのデータをシェーダーに渡しマテリアルの拡散も実現。</li>
-          <li><strong>つる生成</strong>中心から放射状にカーブを配置し、接線に垂直な方向へノイズで大幅にオフセットさせることで、中心に向かって進むつるを表現。</li>
-          <li><strong>ロゴアニメーション</strong>映像冒頭のロゴアニメーションは、カーブ機能と Geometry Nodes で制作。</li>
-        </ul>
-        <div class="gallery">
-          <div class="g-item" data-full="img/lycoris_node.png" data-cap="彼岸花生成ノード"><img src="img/lycoris_node.png" alt="彼岸花生成ノード" loading="lazy"><div class="cap">彼岸花生成ノード</div></div>
-          <div class="g-item" data-full="img/vine_node.png" data-cap="つる生成ノード"><img src="img/vine_node.png" alt="つる生成ノード" loading="lazy"><div class="cap">つる生成ノード</div></div>
-          <div class="g-item" data-full="img/vine_node_2.png" data-cap="つる生成ノード（二種目）"><img src="img/vine_node_2.png" alt="つる生成ノード2" loading="lazy"><div class="cap">つる生成ノード — 二種目</div></div>
-          <div class="g-item" data-full="img/stairs_node.png" data-cap="階段生成ノード"><img src="img/stairs_node.png" alt="階段生成ノード" loading="lazy"><div class="cap">階段生成ノード</div></div>
-          <div class="g-item" data-full="img/logo_node.png" data-cap="ロゴアニメーションノード"><img src="img/logo_node.png" alt="ロゴノード" loading="lazy"><div class="cap">ロゴアニメーションノード</div></div>
-          <div class="g-item" data-full="img/wall_spreading_node.png" data-cap="壁侵食ノード"><img src="img/wall_spreading_node.png" alt="壁侵食ノード" loading="lazy"><div class="cap">壁 侵食表現ノード</div></div>
-          <div class="g-item" data-full="img/spreading_blood_node.png" data-cap="血液拡散ノード"><img src="img/spreading_blood_node.png" alt="血液拡散ノード" loading="lazy"><div class="cap">水中血液拡散ノード</div></div>
-          <div class="g-item" data-full="img/lod_system.png" data-cap="カメラ LOD システム"><img src="img/lod_system.png" alt="LODシステム" loading="lazy"><div class="cap">カメラ LOD システム</div></div>
-        </div>
-      </div>
-
-      <div class="subsection">
-        <h3>b. Houdini</h3>
-        <p>
-          映像タイトル表示のインクアニメーションは Houdini の流体シミュレーションで実現した。
+          アセットの独立性と再利用性の確保の三点である。</span></p>
+<ul class="tech-list">
+<li><span class="lang-en"><strong>Spider lily (higanbana) generation</strong> — spider lilies generated entirely procedurally. Petals are defined with curves, with curvature controlled via a power function for flexible shaping. Instance duplication builds up layers, and snapping onto a sphere shapes the realistic central stamens.</span> <span class="lang-ja"><strong>彼岸花生成</strong>完全プロシージャルに彼岸花を生成。花びらをカーブで定義し、曲率をべき関数で制御することで柔軟な造形を実現。インスタンス複製でレイヤーを作り、球体へのスナップで中心部のシベをリアルに造形した。</span></li>
+<li><span class="lang-en"><strong>Ripple generation</strong> — for the final room scene, where the wooden floor liquefies and ripples spread outward. Built with vertex offset and trigonometric functions, with faint Z-axis noise adding an organic feel.</span> <span class="lang-ja"><strong>波紋生成</strong>最後の部屋シーンで木製の床が液体化し波紋が広がる表現。頂点オフセットと三角関数で作り、Z 軸の微弱なノイズで有機感を出した。</span></li>
+<li><span class="lang-en"><strong>Underwater diffusion</strong> — the scene of blood spreading through the liquefied floor was built by combining Geometry Nodes and shader nodes. Distance to the ripple’s center is calculated in Geometry Nodes and passed to the shader as a float attribute, driving the diffusion and blending.</span> <span class="lang-ja"><strong>水中拡散</strong>床が液体化し血液が広がるシーンをジオメトリ／シェーダーノード併用で制作。波紋中心までの距離をジオメトリノードで計算し float 属性としてシェーダーに渡すことで拡散と混合を実現。</span></li>
+<li><span class="lang-en"><strong>Camera LOD</strong> — to improve performance, tree models of different LOD levels are placed based on their direction and distance from the camera.</span> <span class="lang-ja"><strong>カメラ LOD</strong>パフォーマンス改善のため、カメラからの方角と距離に基づいて異なる LOD の木モデルを配置。</span></li>
+<li><span class="lang-en"><strong>Staircase generation</strong> — a node graph that lets slope, step count, step height, and width all be adjusted and evaluated in real time, making background adjustment extremely smooth.</span> <span class="lang-ja"><strong>階段生成</strong>傾斜率・段数・各段の高さ・横幅などをリアルタイムで調整・評価できるノードグラフを構築し、背景調整が非常にスムーズになった。</span></li>
+<li><span class="lang-en"><strong>Corruption effect</strong> — the scene where the room’s walls are overtaken by red biological tissue. Vertex groups are defined dynamically and displacement applied dynamically; vertex-group data is also passed to the shader to drive material spread.</span> <span class="lang-ja"><strong>侵食表現</strong>部屋の壁が赤い生体組織に侵食されるシーン。頂点グループを動的に定義しディスプレースメントを動的適用。頂点グループのデータをシェーダーに渡しマテリアルの拡散も実現。</span></li>
+<li><span class="lang-en"><strong>Vine generation</strong> — curves are placed radiating out from a center point, then heavily offset by noise in the direction perpendicular to their tangent, producing vines that appear to creep inward toward the center.</span> <span class="lang-ja"><strong>つる生成</strong>中心から放射状にカーブを配置し、接線に垂直な方向へノイズで大幅にオフセットさせることで、中心に向かって進むつるを表現。</span></li>
+<li><span class="lang-en"><strong>Logo animation</strong> — the opening logo animation was built using curve tools together with Geometry Nodes.</span> <span class="lang-ja"><strong>ロゴアニメーション</strong>映像冒頭のロゴアニメーションは、カーブ機能と Geometry Nodes で制作。</span></li>
+</ul>
+<div class="gallery">
+<div class="g-item" data-cap="Spider Lily Generation Node" data-cap-ja="彼岸花生成ノード" data-full="img/lycoris_node.png"><img alt="Spider Lily Generation Node" data-alt-ja="彼岸花生成ノード" loading="lazy" src="img/lycoris_node.png"/><div class="cap"><span class="lang-en">Spider Lily Generation Node</span> <span class="lang-ja">彼岸花生成ノード</span></div></div>
+<div class="g-item" data-cap="Vine Generation Node" data-cap-ja="つる生成ノード" data-full="img/vine_node.png"><img alt="Vine Generation Node" data-alt-ja="つる生成ノード" loading="lazy" src="img/vine_node.png"/><div class="cap"><span class="lang-en">Vine Generation Node</span> <span class="lang-ja">つる生成ノード</span></div></div>
+<div class="g-item" data-cap="Vine Generation Node — Second Variant" data-cap-ja="つる生成ノード（二種目）" data-full="img/vine_node_2.png"><img alt="Vine Generation Node — Second Variant" data-alt-ja="つる生成ノード2" loading="lazy" src="img/vine_node_2.png"/><div class="cap"><span class="lang-en">Vine Generation Node — Second Variant</span> <span class="lang-ja">つる生成ノード — 二種目</span></div></div>
+<div class="g-item" data-cap="Staircase Generation Node" data-cap-ja="階段生成ノード" data-full="img/stairs_node.png"><img alt="Staircase Generation Node" data-alt-ja="階段生成ノード" loading="lazy" src="img/stairs_node.png"/><div class="cap"><span class="lang-en">Staircase Generation Node</span> <span class="lang-ja">階段生成ノード</span></div></div>
+<div class="g-item" data-cap="Logo Animation Node" data-cap-ja="ロゴアニメーションノード" data-full="img/logo_node.png"><img alt="Logo Animation Node" data-alt-ja="ロゴノード" loading="lazy" src="img/logo_node.png"/><div class="cap"><span class="lang-en">Logo Animation Node</span> <span class="lang-ja">ロゴアニメーションノード</span></div></div>
+<div class="g-item" data-cap="Wall Corruption Node" data-cap-ja="壁侵食ノード" data-full="img/wall_spreading_node.png"><img alt="Wall Corruption Node" data-alt-ja="壁侵食ノード" loading="lazy" src="img/wall_spreading_node.png"/><div class="cap"><span class="lang-en">Wall Corruption Node</span> <span class="lang-ja">壁 侵食表現ノード</span></div></div>
+<div class="g-item" data-cap="Underwater Blood Diffusion Node" data-cap-ja="血液拡散ノード" data-full="img/spreading_blood_node.png"><img alt="Underwater Blood Diffusion Node" data-alt-ja="血液拡散ノード" loading="lazy" src="img/spreading_blood_node.png"/><div class="cap"><span class="lang-en">Underwater Blood Diffusion Node</span> <span class="lang-ja">水中血液拡散ノード</span></div></div>
+<div class="g-item" data-cap="Camera LOD System" data-cap-ja="カメラ LOD システム" data-full="img/lod_system.png"><img alt="Camera LOD System" data-alt-ja="LODシステム" loading="lazy" src="img/lod_system.png"/><div class="cap"><span class="lang-en">Camera LOD System</span> <span class="lang-ja">カメラ LOD システム</span></div></div>
+</div>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">b. Houdini</span> <span class="lang-ja">b. Houdini</span></h3>
+<p><span class="lang-en">The ink animation for the title display was achieved with fluid simulation in Houdini. Gas fluid simulation via Blender’s Mantaflow solver was tested first, but fine control over the smoke’s shape and natural underwater dispersion proved difficult. A volume approach using Geometry Nodes was also tried, but shaping it into the ideal form was hard, so the project moved to <span class="highlight">Pyro simulation via Houdini’s DOP network</span>.</span> <span class="lang-ja">映像タイトル表示のインクアニメーションは Houdini の流体シミュレーションで実現した。
           最初は Blender の Mantaflow ソルバーによるガス流体を検証したが、煙の形状の微調整と水中散乱の自然な表現が困難であった。
           ジオメトリノードでボリューム表現を試みたものの、理想的な形状に調整するのは困難であったため、
-          <span class="highlight">Houdini の DOP ネットワークによる Pyro シミュレーション</span>に移行した。
-        </p>
-        <p>
-          buoyancy を低め、turbulence と disturbance を高めに設定することで、水中で散乱していくインクを細かく表現。
+          <span class="highlight">Houdini の DOP ネットワークによる Pyro シミュレーション</span>に移行した。</span></p>
+<p><span class="lang-en">Setting buoyancy low while raising turbulence and disturbance produced a finely detailed rendering of ink dispersing underwater. To allow fast color adjustment, the render out of Houdini was kept monochrome, exported in OpenEXR format via the Karma render engine.</span> <span class="lang-ja">buoyancy を低め、turbulence と disturbance を高めに設定することで、水中で散乱していくインクを細かく表現。
           色彩調整を素早く行えるよう Houdini からはモノクロでレンダリングし、Karma レンダリングエンジンを用いて
-          OpenEXR 形式で書き出した。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/houdini_settings_1.png" data-cap="Houdini 設定 1"><img src="img/houdini_settings_1.png" alt="Houdini設定1" loading="lazy"><div class="cap">Houdini Pyro 設定</div></div>
-          <div class="g-item" data-full="img/houdini_settings_2.png" data-cap="Houdini 設定 2"><img src="img/houdini_settings_2.png" alt="Houdini設定2" loading="lazy"><div class="cap">Houdini Pyro 設定 2</div></div>
-          <div class="g-item" data-full="img/houdini_fluid_viewport.png" data-cap="Houdini ビューポート"><img src="img/houdini_fluid_viewport.png" alt="Houdini流体ビューポート" loading="lazy"><div class="cap">流体シミュレーション ビューポート</div></div>
-          <div class="g-item" data-full="img/houdini_graph.png" data-cap="Houdini ノードグラフ"><img src="img/houdini_graph.png" alt="Houdiniグラフ" loading="lazy"><div class="cap">DOP ネットワーク グラフ</div></div>
-          <div class="g-item" data-full="img/houdini_sim.png" data-cap="Houdini レンダー済み"><img src="img/houdini_sim.png" alt="Houdiniレンダー済み" loading="lazy"><div class="cap">レンダー済み（モノクロ）</div></div>
-          <div class="g-item" data-full="img/fluid_rendered.png" data-cap="流体 レンダリング結果"><img src="img/fluid_rendered.png" alt="流体レンダリング" loading="lazy"><div class="cap">Karma レンダリング結果</div></div>
-          <div class="g-item" data-full="img/fluid_composited.png" data-cap="流体 コンポジット後"><img src="img/fluid_composited.png" alt="流体コンポジット" loading="lazy"><div class="cap">コンポジット後の最終カット</div></div>
-        </div>
-      </div>
-
-      <div class="subsection">
-        <h3>c. プロシージャルマテリアル</h3>
-        <p>
-          世界観に合うマテリアル制作のため、既製テクスチャアセットと独自の 3D スキャンデータを Substance 3D Designer
+          OpenEXR 形式で書き出した。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="Houdini Pyro Settings" data-cap-ja="Houdini 設定 1" data-full="img/houdini_settings_1.png"><img alt="Houdini Pyro Settings" data-alt-ja="Houdini設定1" loading="lazy" src="img/houdini_settings_1.png"/><div class="cap"><span class="lang-en">Houdini Pyro Settings</span> <span class="lang-ja">Houdini Pyro 設定</span></div></div>
+<div class="g-item" data-cap="Houdini Pyro Settings 2" data-cap-ja="Houdini 設定 2" data-full="img/houdini_settings_2.png"><img alt="Houdini Pyro Settings 2" data-alt-ja="Houdini設定2" loading="lazy" src="img/houdini_settings_2.png"/><div class="cap"><span class="lang-en">Houdini Pyro Settings 2</span> <span class="lang-ja">Houdini Pyro 設定 2</span></div></div>
+<div class="g-item" data-cap="Fluid Simulation Viewport" data-cap-ja="Houdini ビューポート" data-full="img/houdini_fluid_viewport.png"><img alt="Fluid Simulation Viewport" data-alt-ja="Houdini流体ビューポート" loading="lazy" src="img/houdini_fluid_viewport.png"/><div class="cap"><span class="lang-en">Fluid Simulation Viewport</span> <span class="lang-ja">流体シミュレーション ビューポート</span></div></div>
+<div class="g-item" data-cap="DOP Network Graph" data-cap-ja="Houdini ノードグラフ" data-full="img/houdini_graph.png"><img alt="DOP Network Graph" data-alt-ja="Houdiniグラフ" loading="lazy" src="img/houdini_graph.png"/><div class="cap"><span class="lang-en">DOP Network Graph</span> <span class="lang-ja">DOP ネットワーク グラフ</span></div></div>
+<div class="g-item" data-cap="Rendered (Monochrome)" data-cap-ja="Houdini レンダー済み" data-full="img/houdini_sim.png"><img alt="Rendered (Monochrome)" data-alt-ja="Houdiniレンダー済み" loading="lazy" src="img/houdini_sim.png"/><div class="cap"><span class="lang-en">Rendered (Monochrome)</span> <span class="lang-ja">レンダー済み（モノクロ）</span></div></div>
+<div class="g-item" data-cap="Karma Render Result" data-cap-ja="流体 レンダリング結果" data-full="img/fluid_rendered.png"><img alt="Karma Render Result" data-alt-ja="流体レンダリング" loading="lazy" src="img/fluid_rendered.png"/><div class="cap"><span class="lang-en">Karma Render Result</span> <span class="lang-ja">Karma レンダリング結果</span></div></div>
+<div class="g-item" data-cap="Final Cut After Compositing" data-cap-ja="流体 コンポジット後" data-full="img/fluid_composited.png"><img alt="Final Cut After Compositing" data-alt-ja="流体コンポジット" loading="lazy" src="img/fluid_composited.png"/><div class="cap"><span class="lang-en">Final Cut After Compositing</span> <span class="lang-ja">コンポジット後の最終カット</span></div></div>
+</div>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">c. Procedural Materials</span> <span class="lang-ja">c. プロシージャルマテリアル</span></h3>
+<p><span class="lang-en">To produce materials that matched the world of the piece, off-the-shelf texture assets and our own 3D scan data were adjusted, modified, and blended in Substance 3D Designer and Blender Shader Nodes. The staircase surface blends two stone materials — one from our own scan data, one off-the-shelf — to reproduce both the areas “covered in mud and sand” and the areas of “exposed base stone.” A separate mud material was also composited in to reproduce the mud that collects in the joints between steps.</span> <span class="lang-ja">世界観に合うマテリアル制作のため、既製テクスチャアセットと独自の 3D スキャンデータを Substance 3D Designer
           および Blender Shader Nodes で調整・改造・ブレンドした。階段のサーフェスは「泥や砂に覆われている」部分と
           「露出しているベースの石」の部分を再現すべく、独自スキャンデータと既製テクスチャの 2 種類の石マテリアルをブレンド。
-          段の繋ぎ目に溜まる泥を再現するため、別の泥マテリアルも合成している。
-        </p>
-        <p>
-          バケモノキャラクターのテクスチャは試行錯誤の末に得られた。Blender シェーダーノードのみでは単調で CG 感が出てしまい、
+          段の繋ぎ目に溜まる泥を再現するため、別の泥マテリアルも合成している。</span></p>
+<p><span class="lang-en">The monster character’s texture was reached only through extensive trial and error. Blender shader nodes alone produced a flat, obviously-CG look, and off-the-shelf biological tissue materials didn’t match the mood of the piece, so both were rejected. In the end, the solution was to <span class="highlight">modify 3D scan data of real biological tissue in Substance 3D Designer</span>. Beef was purchased, its surface muscle and fat distribution analyzed, and then texture-scanned. The resulting images were adjusted in Sampler, and Designer was used to procedurally add organic deformation, polyp-like protrusions, and blood vessels. Blending Voronoi, Noise, and Cell Texture produced random, natural-looking deformation, and this material was later reused for the wall-corruption effect in the room scene.</span> <span class="lang-ja">バケモノキャラクターのテクスチャは試行錯誤の末に得られた。Blender シェーダーノードのみでは単調で CG 感が出てしまい、
           既製の生体組織マテリアルも作品の雰囲気に合わず不採用。最終的に
           <span class="highlight">現実の生体組織の 3D スキャンデータを Substance 3D Designer で改造</span>する手法を考案した。
           牛肉を購入し表面筋肉と脂の分布を分析した上でテクスチャスキャンを実施。得られた画像を Sampler で調整し、
           Designer で有機的な変形・ポリープ状隆起・血管をプロシージャルに追加した。Voronoi・Noise・Cell Texture を
-          ブレンドすることでランダムで自然な変形を実現し、このマテリアルは後の部屋シーンの侵食表現にも流用された。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/rock_shader.png" data-cap="石マテリアル シェーダー"><img src="img/rock_shader.png" alt="石シェーダー" loading="lazy"><div class="cap">階段 石マテリアル シェーダー</div></div>
-          <div class="g-item" data-full="img/character_skin_material.png" data-cap="バケモノ 皮膚マテリアル"><img src="img/character_skin_material.png" alt="皮膚マテリアル" loading="lazy"><div class="cap">バケモノ 皮膚マテリアル</div></div>
-          <div class="g-item" data-full="img/suctance_designer_character.png" data-cap="Substance Designer 作業画面"><img src="img/suctance_designer_character.png" alt="Substance Designer作業画面" loading="lazy"><div class="cap">Substance Designer — 生体組織改造</div></div>
-        </div>
-      </div>
-    </section>
-
-    <div class="divider">
-      <div class="dline"></div>
-      <svg viewBox="0 0 100 100"><path d="M50 15 C58 30,75 32,68 48 C90 52,90 68,68 72 C74 88,58 96,50 84 C42 96,26 88,32 72 C10 68,10 52,32 48 C25 32,42 30,50 15 Z" fill="none" stroke="#a9865a" stroke-width="1.4"/></svg>
-      <div class="dline"></div>
-    </div>
-    <!-- ============ 04 レンダリングと最適化 ============ -->
-    <section class="section" id="s4">
-      <div class="section-head">
-        <span class="section-num">04</span>
-        <span class="section-eyebrow">Rendering & Optimization</span>
-      </div>
-      <h2>レンダリングと最適化</h2>
-      <p class="section-intro">
-        本作は「どの一フレームを切り取っても絵として飾って恥ずかしくない」映像美を目指しており、
+          ブレンドすることでランダムで自然な変形を実現し、このマテリアルは後の部屋シーンの侵食表現にも流用された。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="Staircase Stone Material Shader" data-cap-ja="石マテリアル シェーダー" data-full="img/rock_shader.png"><img alt="Staircase Stone Material Shader" data-alt-ja="石シェーダー" loading="lazy" src="img/rock_shader.png"/><div class="cap"><span class="lang-en">Staircase Stone Material Shader</span> <span class="lang-ja">階段 石マテリアル シェーダー</span></div></div>
+<div class="g-item" data-cap="Monster Skin Material" data-cap-ja="バケモノ 皮膚マテリアル" data-full="img/character_skin_material.png"><img alt="Monster Skin Material" data-alt-ja="皮膚マテリアル" loading="lazy" src="img/character_skin_material.png"/><div class="cap"><span class="lang-en">Monster Skin Material</span> <span class="lang-ja">バケモノ 皮膚マテリアル</span></div></div>
+<div class="g-item" data-cap="Substance Designer — Tissue Modification" data-cap-ja="Substance Designer 作業画面" data-full="img/suctance_designer_character.png"><img alt="Substance Designer — Tissue Modification" data-alt-ja="Substance Designer作業画面" loading="lazy" src="img/suctance_designer_character.png"/><div class="cap"><span class="lang-en">Substance Designer — Tissue Modification</span> <span class="lang-ja">Substance Designer — 生体組織改造</span></div></div>
+</div>
+</div>
+</section>
+<div class="divider">
+<div class="dline"></div>
+<svg viewBox="0 0 100 100"><path d="M50 15 C58 30,75 32,68 48 C90 52,90 68,68 72 C74 88,58 96,50 84 C42 96,26 88,32 72 C10 68,10 52,32 48 C25 32,42 30,50 15 Z" fill="none" stroke="#a9865a" stroke-width="1.4"></path></svg>
+<div class="dline"></div>
+</div>
+<!-- ============ 04 レンダリングと最適化 ============ -->
+<section class="section" id="s4">
+<div class="section-head">
+<span class="section-num">04</span>
+<span class="section-eyebrow">Rendering &amp; Optimization</span>
+</div>
+<h2><span class="lang-en">Rendering &amp; Optimization</span> <span class="lang-ja">レンダリングと最適化</span></h2>
+<p class="section-intro"><span class="lang-en">This work aimed for visual quality where “any single frame could stand on its own as a piece of art” — and the resulting obsession with detail produced an enormous amount of data. Early estimates put render time at <strong>10 minutes per frame with over 500GB of total data</strong>, making it unrealistic to finish by the deadline. After extensive trial and error, this was optimized down to <span class="highlight">an average of 70 seconds per frame and 129GB of total output data</span>.</span> <span class="lang-ja">本作は「どの一フレームを切り取っても絵として飾って恥ずかしくない」映像美を目指しており、
         隅々のディテールにこだわった結果、データ量が膨大になった。当初の試算では
         <strong>1 フレーム 10 分・総データ量 500GB 以上</strong>と、締め切りまでに仕上げるのは非現実的であった。
-        試行錯誤の末、<span class="highlight">1 フレーム平均 70 秒・総出力データ量 129GB</span> まで最適化している。
-      </p>
-
-      <div class="subsection" style="border-left:none; padding-left:0;">
-        <h3>使用マシン スペック</h3>
-        <div class="spec-grid">
-          <div class="spec-cell"><div class="k">GPU</div><div class="v">Radeon RX 7700 XT (12GB)</div></div>
-          <div class="spec-cell"><div class="k">CPU</div><div class="v">Intel Core i5-12400</div></div>
-          <div class="spec-cell"><div class="k">メモリ</div><div class="v">32GB</div></div>
-          <div class="spec-cell"><div class="k">ストレージ</div><div class="v">内蔵 1TB ／ 外付け 500GB</div></div>
-        </div>
-      </div>
-
-      <div class="subsection">
-        <h3>a. AOV 分割</h3>
-        <p>
-          最適化してもレンダリング時間自体は長いため、細かい演出修正のたびに再レンダリングするのは非効率である。
+        試行錯誤の末、<span class="highlight">1 フレーム平均 70 秒・総出力データ量 129GB</span> まで最適化している。</span></p>
+<div class="subsection" style="border-left:none; padding-left:0;">
+<h3><span class="lang-en">Machine Specifications</span> <span class="lang-ja">使用マシン スペック</span></h3>
+<div class="spec-grid">
+<div class="spec-cell"><div class="k">GPU</div><div class="v">Radeon RX 7700 XT (12GB)</div></div>
+<div class="spec-cell"><div class="k">CPU</div><div class="v">Intel Core i5-12400</div></div>
+<div class="spec-cell"><div class="k"><span class="lang-en">Memory</span> <span class="lang-ja">メモリ</span></div><div class="v">32GB</div></div>
+<div class="spec-cell"><div class="k"><span class="lang-en">Storage</span> <span class="lang-ja">ストレージ</span></div><div class="v"><span class="lang-en">Internal 1TB / External 500GB</span> <span class="lang-ja">内蔵 1TB ／ 外付け 500GB</span></div></div>
+</div>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">a. AOV Splitting</span> <span class="lang-ja">a. AOV 分割</span></h3>
+<p><span class="lang-en">Even after optimization, raw render time remained long, so re-rendering for every small tweak to a shot was inefficient. Some effects, like fog, would add even more render time if handled at render time. To allow changes without re-rendering, <strong>AOV pass separation was pursued rigorously</strong>. The information needed for compositing each shot was mapped out in advance, and the AOV passes in the multi-layer EXR were defined with neither excess nor shortfall. Each layer was also exported only for the frame ranges it actually needed, cutting down on unnecessary output.</span> <span class="lang-ja">最適化してもレンダリング時間自体は長いため、細かい演出修正のたびに再レンダリングするのは非効率である。
           フォグなど、レンダリングで行うと所要時間がさらに伸びる表現もある。再レンダリング不要な修正を可能にするため、
           <strong>AOV パス分けを徹底</strong>した。各カットの合成に必要な情報をあらかじめ洗い出し、Multi-layer EXR の
-          AOV パスを過不足なく定義。各レイヤーを必要なフレーム分のみ書き出すことで不要な書き出しも削減した。
-        </p>
-        <p>
-          このアプローチにより時間軸もカットも異なるレンダリングデータが膨大かつ複雑になったため、
+          AOV パスを過不足なく定義。各レイヤーを必要なフレーム分のみ書き出すことで不要な書き出しも削減した。</span></p>
+<p><span class="lang-en">This approach made the volume of render data — spanning different timelines and shots — enormous and complex, which led to the development of an in-house render-management framework called <span class="highlight">Render Protocol</span>. It works as a recipe document defining render settings and output attributes, guaranteeing identical output on any device as long as it matches the recipe. This let dozens of layers be handled accurately, saved time spent double-checking settings, and improved overall production stability.</span> <span class="lang-ja">このアプローチにより時間軸もカットも異なるレンダリングデータが膨大かつ複雑になったため、
           <span class="highlight">Render Protocol</span> という独自のレンダリング管理フレームワークを開発。
           レンダリング設定や出力属性を定義するレシピとして機能し、デバイスを問わずレシピと照合すれば同じ出力が保証される
-          文書書式である。これにより数十に及ぶレイヤーを正確に扱え、設定確認の時間を節約し制作の安定性が向上した。
-        </p>
-        <p>
-          AOV パス量の分だけデータ量も増大し、当初は Half-float の Multi-layer EXR でも合計 500GB 以上になり
+          文書書式である。これにより数十に及ぶレイヤーを正確に扱え、設定確認の時間を節約し制作の安定性が向上した。</span></p>
+<p><span class="lang-en">Data volume grew in proportion to the number of AOV passes, and even with half-float multi-layer EXR, the total initially exceeded 500GB — an unmanageable amount. To address this, the visually lossless <strong>DWAB</strong> compression format was adopted, with compression ratios tuned per shot between 55% and 80%, bringing the total down to a manageable range of around 130GB.</span> <span class="lang-ja">AOV パス量の分だけデータ量も増大し、当初は Half-float の Multi-layer EXR でも合計 500GB 以上になり
           扱いきれなかった。そこで視覚無劣化の圧縮形式 <strong>DWAB</strong> を採用し、カットごとに圧縮率を 55%〜80% に調整することで
-          合計 130GB 前後の現実的な範囲に収めている。
-        </p>
-        <div class="gallery g-wide">
-          <div class="g-item" data-full="img/blender_composition_node.png" data-cap="AOV分割の一例（Blender コンポジションノード）"><img src="img/blender_composition_node.png" alt="AOV分割例" loading="lazy"><div class="cap">AOV 分割の一例</div></div>
-          <div class="g-item" data-full="img/render_protocol.png" data-cap="Render Protocol フレームワーク"><img src="img/render_protocol.png" alt="Render Protocol" loading="lazy"><div class="cap">独自フレームワーク Render Protocol</div></div>
-        </div>
-        <table class="layer-table">
-          <caption>レイヤー分割一覧</caption>
-          <thead><tr><th>レイヤー名</th><th>内容</th></tr></thead>
-          <tbody>
-            <tr><td class="name">cut001_1_mainsetup</td><td>メイン背景（フレーム 1–720）</td></tr>
-            <tr><td class="name">cut001_1_mainsetup_A</td><td>メイン背景（フレーム 721–2100、Cryptomatte 付き）</td></tr>
-            <tr><td class="name">cut001_2_env</td><td>メイン HDR</td></tr>
-            <tr><td class="name">cut001_3_leaves</td><td>落ち葉</td></tr>
-            <tr><td class="name">cut002_1_karasu</td><td>カラス</td></tr>
-            <tr><td class="name">cut002_2_envnorm</td><td>メイン HDR</td></tr>
-            <tr><td class="name">cut002_3_envending</td><td>メイン HDR（暗）</td></tr>
-            <tr><td class="name">cut002_4_mainsetup</td><td>メイン背景</td></tr>
-            <tr><td class="name">cut002_5_mainsetupdark</td><td>メイン背景（暗）</td></tr>
-            <tr><td class="name">cut003_1_character</td><td>化け物キャラクター</td></tr>
-            <tr><td class="name">cut004_1_character</td><td>化け物キャラクター</td></tr>
-            <tr><td class="name">cut004_2_bgscene</td><td>メイン背景</td></tr>
-            <tr><td class="name">cut004_3_env</td><td>メイン HDR</td></tr>
-            <tr><td class="name">cut005_1_room</td><td>部屋本体（家具）</td></tr>
-            <tr><td class="name">cut005_2_wall</td><td>部屋の壁</td></tr>
-            <tr><td class="name">cut005_3_floor</td><td>床</td></tr>
-            <tr><td class="name">cut005_4_cameraoverlay</td><td>カメラの前を覆うつる</td></tr>
-            <tr><td class="name">cut005_5_floorspline</td><td>つる</td></tr>
-            <tr><td class="name">cut005_6_shadowpass</td><td>家具の影パス</td></tr>
-            <tr><td class="name">cut005_7_positionpass</td><td>位置パス</td></tr>
-            <tr><td class="name">cut005_8_wallshielding</td><td>壁シールディング</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="subsection">
-        <h3>b. サンプリング設定</h3>
-        <p>
-          サンプリング数を上げるとレンダリング時間が増大するが、下げるとノイズが出る。各ショットで
+          合計 130GB 前後の現実的な範囲に収めている。</span></p>
+<div class="gallery g-wide">
+<div class="g-item" data-cap="An Example of AOV Splitting" data-cap-ja="AOV分割の一例（Blender コンポジションノード）" data-full="img/blender_composition_node.png"><img alt="An Example of AOV Splitting" data-alt-ja="AOV分割例" loading="lazy" src="img/blender_composition_node.png"/><div class="cap"><span class="lang-en">An Example of AOV Splitting</span> <span class="lang-ja">AOV 分割の一例</span></div></div>
+<div class="g-item" data-cap="Custom Framework — Render Protocol" data-cap-ja="Render Protocol フレームワーク" data-full="img/render_protocol.png"><img alt="Custom Framework — Render Protocol" data-alt-ja="Render Protocol" loading="lazy" src="img/render_protocol.png"/><div class="cap"><span class="lang-en">Custom Framework — Render Protocol</span> <span class="lang-ja">独自フレームワーク Render Protocol</span></div></div>
+</div>
+<table class="layer-table">
+<caption><span class="lang-en">Layer Breakdown List</span> <span class="lang-ja">レイヤー分割一覧</span></caption>
+<thead><tr><th><span class="lang-en">Layer Name</span> <span class="lang-ja">レイヤー名</span></th><th><span class="lang-en">Contents</span> <span class="lang-ja">内容</span></th></tr></thead>
+<tbody>
+<tr><td class="name">cut001_1_mainsetup</td><td><span class="lang-en">Main background (frames 1–720)</span> <span class="lang-ja">メイン背景（フレーム 1–720）</span></td></tr>
+<tr><td class="name">cut001_1_mainsetup_A</td><td><span class="lang-en">Main background (frames 721–2100, with Cryptomatte)</span> <span class="lang-ja">メイン背景（フレーム 721–2100、Cryptomatte 付き）</span></td></tr>
+<tr><td class="name">cut001_2_env</td><td><span class="lang-en">Main HDR</span> <span class="lang-ja">メイン HDR</span></td></tr>
+<tr><td class="name">cut001_3_leaves</td><td><span class="lang-en">Fallen leaves</span> <span class="lang-ja">落ち葉</span></td></tr>
+<tr><td class="name">cut002_1_karasu</td><td><span class="lang-en">Crows</span> <span class="lang-ja">カラス</span></td></tr>
+<tr><td class="name">cut002_2_envnorm</td><td><span class="lang-en">Main HDR</span> <span class="lang-ja">メイン HDR</span></td></tr>
+<tr><td class="name">cut002_3_envending</td><td><span class="lang-en">Main HDR (dark)</span> <span class="lang-ja">メイン HDR（暗）</span></td></tr>
+<tr><td class="name">cut002_4_mainsetup</td><td><span class="lang-en">Main background</span> <span class="lang-ja">メイン背景</span></td></tr>
+<tr><td class="name">cut002_5_mainsetupdark</td><td><span class="lang-en">Main background (dark)</span> <span class="lang-ja">メイン背景（暗）</span></td></tr>
+<tr><td class="name">cut003_1_character</td><td><span class="lang-en">Monster character</span> <span class="lang-ja">化け物キャラクター</span></td></tr>
+<tr><td class="name">cut004_1_character</td><td><span class="lang-en">Monster character</span> <span class="lang-ja">化け物キャラクター</span></td></tr>
+<tr><td class="name">cut004_2_bgscene</td><td><span class="lang-en">Main background</span> <span class="lang-ja">メイン背景</span></td></tr>
+<tr><td class="name">cut004_3_env</td><td><span class="lang-en">Main HDR</span> <span class="lang-ja">メイン HDR</span></td></tr>
+<tr><td class="name">cut005_1_room</td><td><span class="lang-en">Room body (furniture)</span> <span class="lang-ja">部屋本体（家具）</span></td></tr>
+<tr><td class="name">cut005_2_wall</td><td><span class="lang-en">Room walls</span> <span class="lang-ja">部屋の壁</span></td></tr>
+<tr><td class="name">cut005_3_floor</td><td><span class="lang-en">Floor</span> <span class="lang-ja">床</span></td></tr>
+<tr><td class="name">cut005_4_cameraoverlay</td><td><span class="lang-en">Vines covering the camera</span> <span class="lang-ja">カメラの前を覆うつる</span></td></tr>
+<tr><td class="name">cut005_5_floorspline</td><td><span class="lang-en">Vines</span> <span class="lang-ja">つる</span></td></tr>
+<tr><td class="name">cut005_6_shadowpass</td><td><span class="lang-en">Furniture shadow pass</span> <span class="lang-ja">家具の影パス</span></td></tr>
+<tr><td class="name">cut005_7_positionpass</td><td><span class="lang-en">Position pass</span> <span class="lang-ja">位置パス</span></td></tr>
+<tr><td class="name">cut005_8_wallshielding</td><td><span class="lang-en">Wall shielding</span> <span class="lang-ja">壁シールディング</span></td></tr>
+</tbody>
+</table>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">b. Sampling Settings</span> <span class="lang-ja">b. サンプリング設定</span></h3>
+<p><span class="lang-en">Raising the sample count increases render time, while lowering it introduces visible noise. For each shot, the goal was to find “the minimum sample count at which the denoiser can naturally remove any observable noise.” In practice, this kept the base count to <strong>16–64 samples</strong>, while shots outputting only shadow or mask passes were rendered at a flat <strong>1 sample</strong>.</span> <span class="lang-ja">サンプリング数を上げるとレンダリング時間が増大するが、下げるとノイズが出る。各ショットで
           「デノイザーで自然に観察可能なノイズを除去できる最低限のサンプリング数」を模索した結果、
-          基本 <strong>16〜64</strong> に抑え、影やマスクのみを出力するショットは <strong>1 サンプリング</strong>で割り切った。
-        </p>
-        <p>
-          シーンが暗い場合デノイズのパフォーマンスが劣るため、レンダリング時は暗いライティングを避け、
+          基本 <strong>16〜64</strong> に抑え、影やマスクのみを出力するショットは <strong>1 サンプリング</strong>で割り切った。</span></p>
+<p><span class="lang-en">Because denoiser performance suffers in dark scenes, dark lighting was avoided at render time; lighting was set at the intended hue and saturation but with higher brightness, and darkened later in compositing, maximizing the denoiser’s effectiveness. As a result, total render time was cut to <span class="highlight">one-sixth to one-tenth of the original</span> while maintaining overall visual quality.</span> <span class="lang-ja">シーンが暗い場合デノイズのパフォーマンスが劣るため、レンダリング時は暗いライティングを避け、
           想定と同じ色相・彩度のライティングを高めの明度で施し、コンポジットで暗くすることでデノイザーの効果を最大化した。
-          この結果、映像全体のクオリティを保ちながら総レンダリング時間を当初の <span class="highlight">6〜10 倍短縮</span>できた。
-        </p>
-      </div>
-
-      <div class="subsection">
-        <h3>c. レンダリングエンジン併用</h3>
-        <p>
-          リアルなホラー体験のため基本はレイトレーサーの Cycles を採用しつつ、EEVEE の高速性も活用した。
+          この結果、映像全体のクオリティを保ちながら総レンダリング時間を当初の <span class="highlight">6〜10 倍短縮</span>できた。</span></p>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">c. Combined Use of Render Engines</span> <span class="lang-ja">c. レンダリングエンジン併用</span></h3>
+<p><span class="lang-en">For a realistic horror experience, the ray-tracer Cycles was used as the baseline, while also taking advantage of EEVEE’s speed. The main on-screen layer was rendered in Cycles, while supporting layers such as shadow passes, or effects showing no observable difference between Cycles and EEVEE, were rendered in EEVEE. To avoid any quality loss, any layer considered for EEVEE was tested by extracting a few frames and comparing both engines, and EEVEE was only adopted where no clear difference was visible. In some cases, Cycles’s ray tracing produced unintended lighting effects, and EEVEE actually matched the intended art direction better.</span> <span class="lang-ja">リアルなホラー体験のため基本はレイトレーサーの Cycles を採用しつつ、EEVEE の高速性も活用した。
           画面の主体レイヤーは Cycles、影パスなど補助的なレイヤーや Cycles と EEVEE で差異が観察できないエフェクトは EEVEE でレンダリング。
           クオリティ低下を防ぐため、EEVEE 採用を検討するレイヤーは数フレームを抽出し両エンジンで比較し、明らかな差異がない場合のみ EEVEE を採用した。
-          Cycles のレイトレーシングが想定外のライティング効果を生み、むしろ EEVEE の方が美術意図に合うケースもあった。
-        </p>
-      </div>
-
-      <div class="subsection">
-        <h3>d. LOD</h3>
-        <p>
-          初回レンダリング時、BVH アクセラレータ構造の構築に異常に時間がかかり、調査の結果
+          Cycles のレイトレーシングが想定外のライティング効果を生み、むしろ EEVEE の方が美術意図に合うケースもあった。</span></p>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">d. LOD</span> <span class="lang-ja">d. LOD</span></h3>
+<p><span class="lang-en">During the first render, building the BVH acceleration structure took an abnormally long time. Investigation revealed the bottleneck was <span class="highlight">the enormous polygon count of the background trees</span> — the same full-detail tree model had been placed regardless of camera distance. A simple LOD switching system was built with Geometry Nodes, three tiers of LOD models were generated with the Decimate modifier, and placement was adjusted by distance. As a result, BVH build time was <strong>cut by roughly 30%</strong>.</span> <span class="lang-ja">初回レンダリング時、BVH アクセラレータ構造の構築に異常に時間がかかり、調査の結果
           <span class="highlight">背景樹木の膨大なポリゴン数</span>がボトルネックであった。
           カメラ距離を問わず同じ木のモデルを配置していたことが原因である。ジオメトリノードで簡易 LOD 切り替えシステムを構築し、
           Decimate モディファイアで 3 段階の LOD モデルを作成、距離に応じて配置した結果、
-          BVH 構築時間が <strong>約 3 割短縮</strong>した。
-        </p>
-      </div>
-
-      <div class="subsection">
-        <h3>e. VRAM オーバーフロー</h3>
-        <p>
-          繊細な背景と説得力のあるリアリティのため、4K テクスチャを 40 枚近く使用している。そのためテクスチャロード時間が膨大になり
+          BVH 構築時間が <strong>約 3 割短縮</strong>した。</span></p>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">e. VRAM Overflow</span> <span class="lang-ja">e. VRAM オーバーフロー</span></h3>
+<p><span class="lang-en">For fine-grained backgrounds and convincing realism, nearly 40 separate 4K textures were used. This drove texture load times up and put heavy pressure on VRAM, forcing spillover into main memory that sharply reduced I/O speed and became a bottleneck. Downgrading textures to 2K was tried, but the visible quality loss ruled it out, so a different fix was pursued while keeping textures at 4K.</span> <span class="lang-ja">繊細な背景と説得力のあるリアリティのため、4K テクスチャを 40 枚近く使用している。そのためテクスチャロード時間が膨大になり
           VRAM が圧迫され、メインメモリへの退避により I/O 速度が急激に低下しボトルネックとなった。
-          テクスチャを 2K にダウングレードする対応も試みたが見た目に影響が出るため、4K のまま別の対策を講じることにした。
-        </p>
-        <p>
-          各レイヤー・各カットの出力は同一シーンの複数カメラではなく完全に異なるシーンに分けて撮影することで、
+          テクスチャを 2K にダウングレードする対応も試みたが見た目に影響が出るため、4K のまま別の対策を講じることにした。</span></p>
+<p><span class="lang-en">Rather than using multiple cameras within a single shared scene, each layer and shot was shot from a completely separate scene, allowing an optimization where “only the models and materials that layer actually needs are kept, and everything else is physically deleted.” It was also observed that Blender’s cache builds up in memory over long working sessions, so Blender was restarted before and after rendering any heavy scene. As a result, VRAM usage was kept to a maximum of <strong>11.6GB</strong> for most of the time, with main-memory spillover capped at a maximum of <strong>3GB</strong>.</span> <span class="lang-ja">各レイヤー・各カットの出力は同一シーンの複数カメラではなく完全に異なるシーンに分けて撮影することで、
           「そのレイヤーに必要なモデルとマテリアルのみを残し、それ以外を物理的に削除する」最適化を実施。
           さらに Blender を長時間使用するとキャッシュがメモリに溜まる現象が確認されたため、重いシーンのレンダリング前後で
           Blender を再起動する運用とした。結果、VRAM 消費は大部分の時間で最大 <strong>11.6GB</strong>、
-          メインメモリ退避は最大 <strong>3GB</strong> に抑えられた。
-        </p>
-      </div>
-    </section>
-
-    <div class="divider">
-      <div class="dline"></div>
-      <svg viewBox="0 0 100 100"><path d="M50 15 C58 30,75 32,68 48 C90 52,90 68,68 72 C74 88,58 96,50 84 C42 96,26 88,32 72 C10 68,10 52,32 48 C25 32,42 30,50 15 Z" fill="none" stroke="#a9865a" stroke-width="1.4"/></svg>
-      <div class="dline"></div>
-    </div>
-    <!-- ============ 05 コンポジット ============ -->
-    <section class="section" id="s5">
-      <div class="section-head">
-        <span class="section-num">05</span>
-        <span class="section-eyebrow">Compositing</span>
-      </div>
-      <h2>コンポジット</h2>
-      <p class="section-intro">
-        レンダリング負荷を上げうる表現をなるべくコンポジットへ逃がし、
+          メインメモリ退避は最大 <strong>3GB</strong> に抑えられた。</span></p>
+</div>
+</section>
+<div class="divider">
+<div class="dline"></div>
+<svg viewBox="0 0 100 100"><path d="M50 15 C58 30,75 32,68 48 C90 52,90 68,68 72 C74 88,58 96,50 84 C42 96,26 88,32 72 C10 68,10 52,32 48 C25 32,42 30,50 15 Z" fill="none" stroke="#a9865a" stroke-width="1.4"></path></svg>
+<div class="dline"></div>
+</div>
+<!-- ============ 05 コンポジット ============ -->
+<section class="section" id="s5">
+<div class="section-head">
+<span class="section-num">05</span>
+<span class="section-eyebrow">Compositing</span>
+</div>
+<h2><span class="lang-en">Compositing</span> <span class="lang-ja">コンポジット</span></h2>
+<p class="section-intro"><span class="lang-en">Wherever possible, effects that would increase render load were pushed off into compositing instead, with the goal of raising the finished quality of the rendered image itself. At the core of this was <strong>multi-channel compositing in NukeX using multi-layer OpenEXR</strong>.</span> <span class="lang-ja">レンダリング負荷を上げうる表現をなるべくコンポジットへ逃がし、
         レンダリング出力の絵としての完成度を上げることを目指した。中心となるのは NukeX による
-        <strong>Multi-layer OpenEXR を用いたマルチチャンネルコンポジット</strong>である。
-      </p>
-
-      <div class="subsection">
-        <h3>a. マルチチャンネルコンポジット</h3>
-        <p>
-          プロローグのシネグラフィックス部分のモノクロ画像は、Blender からレンダーしたカラー画像を Nuke で加工したもの。
-          点滅するカラスの目は After Effects の loopOut エクスプレッションで実現した。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/prologue_workbench.png" data-cap="プロローグ Nuke 作業画面"><img src="img/prologue_workbench.png" alt="プロローグ作業画面" loading="lazy"><div class="cap">プロローグ — Nuke 作業画面</div></div>
-          <div class="g-item" data-full="img/prologue_color_rendered.png" data-cap="プロローグ カラーレンダー"><img src="img/prologue_color_rendered.png" alt="プロローグカラーレンダー" loading="lazy"><div class="cap">Blender カラーレンダー</div></div>
-          <div class="g-item" data-full="img/prologue.png" data-cap="プロローグ 最終カット"><img src="img/prologue.png" alt="プロローグ最終" loading="lazy"><div class="cap">最終カット（モノクロ）</div></div>
-          <div class="g-item" data-full="img/nuke_prologue_graph.png" data-cap="Nuke ノードグラフ"><img src="img/nuke_prologue_graph.png" alt="Nukeグラフ" loading="lazy"><div class="cap">Nuke ノードグラフ</div></div>
-        </div>
-
-        <p>
-          フォグ表現は Mist パスで実現した。Merge ノードでそのまま合成すると画面全体が白くボケ彩度が落ちてしまい、
+        <strong>Multi-layer OpenEXR を用いたマルチチャンネルコンポジット</strong>である。</span></p>
+<div class="subsection">
+<h3><span class="lang-en">a. Multi-Channel Compositing</span> <span class="lang-ja">a. マルチチャンネルコンポジット</span></h3>
+<p><span class="lang-en">The monochrome cinemagraph images in the prologue were made by processing color images rendered in Blender through Nuke. The blinking crow’s eye was achieved using After Effects’s loopOut expression.</span> <span class="lang-ja">プロローグのシネグラフィックス部分のモノクロ画像は、Blender からレンダーしたカラー画像を Nuke で加工したもの。
+          点滅するカラスの目は After Effects の loopOut エクスプレッションで実現した。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="Prologue — Nuke Working View" data-cap-ja="プロローグ Nuke 作業画面" data-full="img/prologue_workbench.png"><img alt="Prologue — Nuke Working View" data-alt-ja="プロローグ作業画面" loading="lazy" src="img/prologue_workbench.png"/><div class="cap"><span class="lang-en">Prologue — Nuke Working View</span> <span class="lang-ja">プロローグ — Nuke 作業画面</span></div></div>
+<div class="g-item" data-cap="Blender Color Render" data-cap-ja="プロローグ カラーレンダー" data-full="img/prologue_color_rendered.png"><img alt="Blender Color Render" data-alt-ja="プロローグカラーレンダー" loading="lazy" src="img/prologue_color_rendered.png"/><div class="cap"><span class="lang-en">Blender Color Render</span> <span class="lang-ja">Blender カラーレンダー</span></div></div>
+<div class="g-item" data-cap="Final Cut (Monochrome)" data-cap-ja="プロローグ 最終カット" data-full="img/prologue.png"><img alt="Final Cut (Monochrome)" data-alt-ja="プロローグ最終" loading="lazy" src="img/prologue.png"/><div class="cap"><span class="lang-en">Final Cut (Monochrome)</span> <span class="lang-ja">最終カット（モノクロ）</span></div></div>
+<div class="g-item" data-cap="Nuke Node Graph" data-cap-ja="Nuke ノードグラフ" data-full="img/nuke_prologue_graph.png"><img alt="Nuke Node Graph" data-alt-ja="Nukeグラフ" loading="lazy" src="img/nuke_prologue_graph.png"/><div class="cap"><span class="lang-en">Nuke Node Graph</span> <span class="lang-ja">Nuke ノードグラフ</span></div></div>
+</div>
+<p><span class="lang-en">Fog was achieved using the Mist pass. Compositing it directly through a Merge node washed the whole frame out white and killed saturation; multiplying in red-to-orange to match the dusk sky color just made it flat and monotone. A Noise node added grain to enrich the color, but still didn’t produce a sense of depth. In the end, <span class="highlight">a color derived from the Position pass, based on object position, was multiplied into the Mist pass</span>, producing a pseudo-depth effect that gave the fog spatial richness.</span> <span class="lang-ja">フォグ表現は Mist パスで実現した。Merge ノードでそのまま合成すると画面全体が白くボケ彩度が落ちてしまい、
           夕暮れの空色に合わせ赤〜オレンジを乗算しても単調で平面的になった。Noise ノードで色にざらつきを加え表現を豊かにしたが
           奥行き感が出ず、最終的に <span class="highlight">Position パスでオブジェクト位置に応じた色を Mist パスに乗算</span>し、
-          擬似的な深度表現で空間的な豊かさを獲得した。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/nuke_fog_graph.png" data-cap="フォグ Nukeグラフ"><img src="img/nuke_fog_graph.png" alt="フォググラフ" loading="lazy"><div class="cap">フォグ — Nuke ノードグラフ</div></div>
-          <div class="g-item" data-full="img/image_withoutfog.png" data-cap="フォグなし"><img src="img/image_withoutfog.png" alt="フォグなし" loading="lazy"><div class="cap">フォグ適用前</div></div>
-          <div class="g-item" data-full="img/image_withfog.png" data-cap="フォグあり"><img src="img/image_withfog.png" alt="フォグあり" loading="lazy"><div class="cap">フォグ適用後</div></div>
-        </div>
-
-        <p>
-          部屋シーンで床が液体化し机の足が浸る表現は、屈折・伝導の計算コストが高いため 3DCG ではなく
+          擬似的な深度表現で空間的な豊かさを獲得した。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="Fog — Nuke Node Graph" data-cap-ja="フォグ Nukeグラフ" data-full="img/nuke_fog_graph.png"><img alt="Fog — Nuke Node Graph" data-alt-ja="フォググラフ" loading="lazy" src="img/nuke_fog_graph.png"/><div class="cap"><span class="lang-en">Fog — Nuke Node Graph</span> <span class="lang-ja">フォグ — Nuke ノードグラフ</span></div></div>
+<div class="g-item" data-cap="Before Fog" data-cap-ja="フォグなし" data-full="img/image_withoutfog.png"><img alt="Before Fog" data-alt-ja="フォグなし" loading="lazy" src="img/image_withoutfog.png"/><div class="cap"><span class="lang-en">Before Fog</span> <span class="lang-ja">フォグ適用前</span></div></div>
+<div class="g-item" data-cap="After Fog" data-cap-ja="フォグあり" data-full="img/image_withfog.png"><img alt="After Fog" data-alt-ja="フォグあり" loading="lazy" src="img/image_withfog.png"/><div class="cap"><span class="lang-en">After Fog</span> <span class="lang-ja">フォグ適用後</span></div></div>
+</div>
+<p><span class="lang-en">The effect of the floor turning liquid and the desk legs submerging in the room scene was achieved not through 3D refraction and conduction simulation — too computationally expensive — but through <strong>compositing based on the Position pass</strong>. Only the Z-axis of the desk’s Position pass was extracted, contrast was adjusted with Color Adjustment, and the Z-axis value was linked to the alpha channel, so that the closer a point on the desk got to the floor (the liquid), the more its transparency dropped — producing a convincing pseudo-submersion effect.</span> <span class="lang-ja">部屋シーンで床が液体化し机の足が浸る表現は、屈折・伝導の計算コストが高いため 3DCG ではなく
           <strong>Position パスによるコンポジット</strong>で実現した。机の Position パスの Z 軸のみを抽出し、
           Color Adjustment でコントラストを調整、Z 軸位置の値とアルファチャンネルを紐付けることで、
-          床（液体）に近づくほど机の透明度が下がる擬似的な浸水表現を実現した。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/desk_raw.png" data-cap="机 素の画像"><img src="img/desk_raw.png" alt="机素の画像" loading="lazy"><div class="cap">机 — 浸水前</div></div>
-          <div class="g-item" data-full="img/desk_withwater.png" data-cap="机 浸水表現後"><img src="img/desk_withwater.png" alt="机浸水後" loading="lazy"><div class="cap">机 — 浸水表現後</div></div>
-        </div>
-
-        <p>
-          バケモノキャラクターの髪は暗いライティング下で質感が失われ真っ黒に潰れていた。ライティング側で解決すると
+          床（液体）に近づくほど机の透明度が下がる擬似的な浸水表現を実現した。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="Desk — Before Submersion" data-cap-ja="机 素の画像" data-full="img/desk_raw.png"><img alt="Desk — Before Submersion" data-alt-ja="机素の画像" loading="lazy" src="img/desk_raw.png"/><div class="cap"><span class="lang-en">Desk — Before Submersion</span> <span class="lang-ja">机 — 浸水前</span></div></div>
+<div class="g-item" data-cap="Desk — After Submersion Effect" data-cap-ja="机 浸水表現後" data-full="img/desk_withwater.png"><img alt="Desk — After Submersion Effect" data-alt-ja="机浸水後" loading="lazy" src="img/desk_withwater.png"/><div class="cap"><span class="lang-en">Desk — After Submersion Effect</span> <span class="lang-ja">机 — 浸水表現後</span></div></div>
+</div>
+<p><span class="lang-en">Under dark lighting, the monster character’s hair lost all texture and crushed to solid black. Fixing this on the lighting side would have raised render cost and risked breaking the shading, so it was handled in compositing instead. Compositing an Ambient Occlusion pass onto the Beauty pass produced an unnaturally bright result because of the white AO pass, so <span class="highlight">the AO pass was multiplied with red</span> to reproduce a more natural-looking reflection. The character was also brightened selectively, based on the Diffuse Color pass, while preserving correct color relationships, to strengthen its sense of belonging within the background.</span> <span class="lang-ja">バケモノキャラクターの髪は暗いライティング下で質感が失われ真っ黒に潰れていた。ライティング側で解決すると
           レンダリングコストが増大しシェーディング破綻のリスクもあるため、コンポジットで対応。
           Beauty パスに Ambient Occlusion パスを合成したが白い AO パスにより不自然な明るさが出たため、
           <span class="highlight">AO パスに赤色を乗算</span>することで自然な反射を再現した。
-          また Diffuse Color パスに基づき、正しい色彩関係を保ったままキャラクターのみを明るくし背景との一体感を強めた。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/character_closeup_raw.png" data-cap="キャラクター クローズアップ 素"><img src="img/character_closeup_raw.png" alt="クローズアップ素" loading="lazy"><div class="cap">クローズアップ — 合成前</div></div>
-          <div class="g-item" data-full="img/character_closeup_hairao.png" data-cap="キャラクター クローズアップ AO"><img src="img/character_closeup_hairao.png" alt="クローズアップAO" loading="lazy"><div class="cap">クローズアップ — AO 合成後</div></div>
-          <div class="g-item" data-full="img/character_closeup_composited.png" data-cap="キャラクター クローズアップ 合成"><img src="img/character_closeup_composited.png" alt="クローズアップ合成後" loading="lazy"><div class="cap">クローズアップ — 合成</div></div>
-        </div>
-
-        <p>
-          落ち葉の表現もコンポジットで実現した。落ち葉は修正頻度が高く、そのたびに千フレーム以上ある背景を再レンダリングするのは
+          また Diffuse Color パスに基づき、正しい色彩関係を保ったままキャラクターのみを明るくし背景との一体感を強めた。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="Close-up — Before Compositing" data-cap-ja="キャラクター クローズアップ 素" data-full="img/character_closeup_raw.png"><img alt="Close-up — Before Compositing" data-alt-ja="クローズアップ素" loading="lazy" src="img/character_closeup_raw.png"/><div class="cap"><span class="lang-en">Close-up — Before Compositing</span> <span class="lang-ja">クローズアップ — 合成前</span></div></div>
+<div class="g-item" data-cap="Close-up — After AO Compositing" data-cap-ja="キャラクター クローズアップ AO" data-full="img/character_closeup_hairao.png"><img alt="Close-up — After AO Compositing" data-alt-ja="クローズアップAO" loading="lazy" src="img/character_closeup_hairao.png"/><div class="cap"><span class="lang-en">Close-up — After AO Compositing</span> <span class="lang-ja">クローズアップ — AO 合成後</span></div></div>
+<div class="g-item" data-cap="Close-up — Composited" data-cap-ja="キャラクター クローズアップ 合成" data-full="img/character_closeup_composited.png"><img alt="Close-up — Composited" data-alt-ja="クローズアップ合成後" loading="lazy" src="img/character_closeup_composited.png"/><div class="cap"><span class="lang-en">Close-up — Composited</span> <span class="lang-ja">クローズアップ — 合成</span></div></div>
+</div>
+<p><span class="lang-en">The fallen leaves were also handled in compositing. Because leaves needed frequent adjustment, re-rendering a background of over a thousand frames every time would have been inefficient, so they were treated as a separate layer. The area of the background model where leaves could fall was exported as a Cryptomatte, and the leaves were composited onto the main background in NukeX using that as a mask. The leaves initially looked like they were floating due to insufficient shadow depth — solved by offsetting the Diffuse Light pass and adjusting color and transparency — while overly sharp edges were softened with a slight blur.</span> <span class="lang-ja">落ち葉の表現もコンポジットで実現した。落ち葉は修正頻度が高く、そのたびに千フレーム以上ある背景を再レンダリングするのは
           非効率であるため、別レイヤーとして扱った。背景モデルで葉が落ちうる範囲を Cryptomatte として書き出し、
           NukeX でマスクとして葉をメイン背景に合成。影の深さが足りず浮いて見えた問題は Diffuse Light パスをずらし
-          色と透明度を調整することで解決し、縁の鋭さは微弱なぼかしで対処した。
-        </p>
-      </div>
-
-      <div class="subsection">
-        <h3>b. カラー調整</h3>
-        <p>
-          暗い環境ではデノイザーの性能が落ちるため、レンダリングはなるべく明るいライティングで行い、
-          想定と同等の色相・彩度、あるいは中立色（白）のライティングで撮影し、後に NukeX で色調整する前提で制作した。
-        </p>
-        <p>
-          本作で暗い環境が中心となるのは神社シーン後半と部屋シーン。神社シーンは想定と同じ色相・彩度でレンダリングし、
+          色と透明度を調整することで解決し、縁の鋭さは微弱なぼかしで対処した。</span></p>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">b. Color Adjustment</span> <span class="lang-ja">b. カラー調整</span></h3>
+<p><span class="lang-en">Since denoiser performance drops in dark environments, rendering was done with lighting as bright as possible — shot at either the intended hue and saturation or with neutral white lighting — on the assumption that color would later be graded in NukeX.</span> <span class="lang-ja">暗い環境ではデノイザーの性能が落ちるため、レンダリングはなるべく明るいライティングで行い、
+          想定と同等の色相・彩度、あるいは中立色（白）のライティングで撮影し、後に NukeX で色調整する前提で制作した。</span></p>
+<p><span class="lang-en">The two dark-dominated environments in this work are the latter half of the shrine scene and the room scene. The shrine scene was rendered at its intended hue and saturation, with gain lowered via NukeX’s Color Adjustment and shadow depth emphasized through AO pass compositing. The room scene was rendered with neutral lighting for ease of adjustment, then had its brightness lowered and red overlaid to bring out a sense of <span class="highlight">horror and wrongness</span>.</span> <span class="lang-ja">本作で暗い環境が中心となるのは神社シーン後半と部屋シーン。神社シーンは想定と同じ色相・彩度でレンダリングし、
           NukeX の Color Adjustment で Gain を下げ、AO パス合成で影の立体感を強調した。
           部屋シーンは調整のしやすさから中立色のライティングでレンダリングし、明度を下げて赤をオーバーレイすることで
-          <span class="highlight">おぞましさ</span>を演出した。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/shrine_image_raw.png" data-cap="神社 生の明るい画像"><img src="img/shrine_image_raw.png" alt="神社生画像" loading="lazy"><div class="cap">神社 — 生の明るい画像</div></div>
-          <div class="g-item" data-full="img/shrine_ao_pass.png" data-cap="神社 AOパス"><img src="img/shrine_ao_pass.png" alt="神社AOパス" loading="lazy"><div class="cap">神社 — AO パス</div></div>
-          <div class="g-item" data-full="img/shrine_shadow_adjusted.png" data-cap="神社 影調整後"><img src="img/shrine_shadow_adjusted.png" alt="神社影調整後" loading="lazy"><div class="cap">神社 — 影調整後</div></div>
-          <div class="g-item" data-full="img/shrine_glare_pass.png" data-cap="神社 グレアパス"><img src="img/shrine_glare_pass.png" alt="神社グレアパス" loading="lazy"><div class="cap">神社 — グレアパス</div></div>
-          <div class="g-item" data-full="img/shrine_withglare.png" data-cap="神社 グレア適用後"><img src="img/shrine_withglare.png" alt="神社グレア適用後" loading="lazy"><div class="cap">神社 — グレア適用後</div></div>
-          <div class="g-item" data-full="img/shrine_withcharacter.png" data-cap="神社 キャラクター合成後"><img src="img/shrine_withcharacter.png" alt="神社キャラクター合成後" loading="lazy"><div class="cap">神社 — キャラクター合成後</div></div>
-          <div class="g-item" data-full="img/nuke_dark_shrine_graph.png" data-cap="神社 Nukeグラフ"><img src="img/nuke_dark_shrine_graph.png" alt="神社グラフ" loading="lazy"><div class="cap">暗い神社 — ノードグラフ</div></div>
-        </div>
-        <p>
-          家具・壁・床は個別にカラー調整を行っている。机（木製）は光を散乱する性質から環境光の影響で全体が赤みを帯びるようにし、
-          壁の背後から襲う生体組織を目立たせるため、あえて赤みを落とすなど部位ごとに細かく対応した。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/deskimage_raw.png" data-cap="机 生の画像"><img src="img/deskimage_raw.png" alt="机生画像" loading="lazy"><div class="cap">机 — 生の画像</div></div>
-          <div class="g-item" data-full="img/deskimage_withlighting.png" data-cap="机 ライティング調整後"><img src="img/deskimage_withlighting.png" alt="机ライティング後" loading="lazy"><div class="cap">机 — ライティング調整後</div></div>
-          <div class="g-item" data-full="img/room_composited.png" data-cap="部屋 合成完了"><img src="img/room_composited.png" alt="部屋合成完了" loading="lazy"><div class="cap">部屋シーン — 合成完了</div></div>
-          <div class="g-item" data-full="img/nuke_room_graph.png" data-cap="部屋 Nukeグラフ"><img src="img/nuke_room_graph.png" alt="部屋グラフ" loading="lazy"><div class="cap">部屋シーン — ノードグラフ</div></div>
-        </div>
-      </div>
-
-      <div class="subsection">
-        <h3>c. シーン遷移アニメーション</h3>
-        <p>
-          明るい夕暮れの空からまっ赤な不気味な空への遷移は「カラスの群れの飛行」で表現した。同一画面に全く異なる二つの環境が
+          <span class="highlight">おぞましさ</span>を演出した。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="Shrine — Raw Bright Image" data-cap-ja="神社 生の明るい画像" data-full="img/shrine_image_raw.png"><img alt="Shrine — Raw Bright Image" data-alt-ja="神社生画像" loading="lazy" src="img/shrine_image_raw.png"/><div class="cap"><span class="lang-en">Shrine — Raw Bright Image</span> <span class="lang-ja">神社 — 生の明るい画像</span></div></div>
+<div class="g-item" data-cap="Shrine — AO Pass" data-cap-ja="神社 AOパス" data-full="img/shrine_ao_pass.png"><img alt="Shrine — AO Pass" data-alt-ja="神社AOパス" loading="lazy" src="img/shrine_ao_pass.png"/><div class="cap"><span class="lang-en">Shrine — AO Pass</span> <span class="lang-ja">神社 — AO パス</span></div></div>
+<div class="g-item" data-cap="Shrine — After Shadow Adjustment" data-cap-ja="神社 影調整後" data-full="img/shrine_shadow_adjusted.png"><img alt="Shrine — After Shadow Adjustment" data-alt-ja="神社影調整後" loading="lazy" src="img/shrine_shadow_adjusted.png"/><div class="cap"><span class="lang-en">Shrine — After Shadow Adjustment</span> <span class="lang-ja">神社 — 影調整後</span></div></div>
+<div class="g-item" data-cap="Shrine — Glare Pass" data-cap-ja="神社 グレアパス" data-full="img/shrine_glare_pass.png"><img alt="Shrine — Glare Pass" data-alt-ja="神社グレアパス" loading="lazy" src="img/shrine_glare_pass.png"/><div class="cap"><span class="lang-en">Shrine — Glare Pass</span> <span class="lang-ja">神社 — グレアパス</span></div></div>
+<div class="g-item" data-cap="Shrine — After Glare Applied" data-cap-ja="神社 グレア適用後" data-full="img/shrine_withglare.png"><img alt="Shrine — After Glare Applied" data-alt-ja="神社グレア適用後" loading="lazy" src="img/shrine_withglare.png"/><div class="cap"><span class="lang-en">Shrine — After Glare Applied</span> <span class="lang-ja">神社 — グレア適用後</span></div></div>
+<div class="g-item" data-cap="Shrine — After Character Composite" data-cap-ja="神社 キャラクター合成後" data-full="img/shrine_withcharacter.png"><img alt="Shrine — After Character Composite" data-alt-ja="神社キャラクター合成後" loading="lazy" src="img/shrine_withcharacter.png"/><div class="cap"><span class="lang-en">Shrine — After Character Composite</span> <span class="lang-ja">神社 — キャラクター合成後</span></div></div>
+<div class="g-item" data-cap="Dark Shrine — Node Graph" data-cap-ja="神社 Nukeグラフ" data-full="img/nuke_dark_shrine_graph.png"><img alt="Dark Shrine — Node Graph" data-alt-ja="神社グラフ" loading="lazy" src="img/nuke_dark_shrine_graph.png"/><div class="cap"><span class="lang-en">Dark Shrine — Node Graph</span> <span class="lang-ja">暗い神社 — ノードグラフ</span></div></div>
+</div>
+<p><span class="lang-en">Furniture, walls, and floor were each color-graded individually. Because the wooden desk scatters light, it was tinted red overall by ambient light, while the walls had their red intentionally reduced so the biological tissue attacking from behind them would stand out — each part treated with individual care.</span> <span class="lang-ja">家具・壁・床は個別にカラー調整を行っている。机（木製）は光を散乱する性質から環境光の影響で全体が赤みを帯びるようにし、
+          壁の背後から襲う生体組織を目立たせるため、あえて赤みを落とすなど部位ごとに細かく対応した。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="Desk — Raw Image" data-cap-ja="机 生の画像" data-full="img/deskimage_raw.png"><img alt="Desk — Raw Image" data-alt-ja="机生画像" loading="lazy" src="img/deskimage_raw.png"/><div class="cap"><span class="lang-en">Desk — Raw Image</span> <span class="lang-ja">机 — 生の画像</span></div></div>
+<div class="g-item" data-cap="Desk — After Lighting Adjustment" data-cap-ja="机 ライティング調整後" data-full="img/deskimage_withlighting.png"><img alt="Desk — After Lighting Adjustment" data-alt-ja="机ライティング後" loading="lazy" src="img/deskimage_withlighting.png"/><div class="cap"><span class="lang-en">Desk — After Lighting Adjustment</span> <span class="lang-ja">机 — ライティング調整後</span></div></div>
+<div class="g-item" data-cap="Room Scene — Compositing Complete" data-cap-ja="部屋 合成完了" data-full="img/room_composited.png"><img alt="Room Scene — Compositing Complete" data-alt-ja="部屋合成完了" loading="lazy" src="img/room_composited.png"/><div class="cap"><span class="lang-en">Room Scene — Compositing Complete</span> <span class="lang-ja">部屋シーン — 合成完了</span></div></div>
+<div class="g-item" data-cap="Room Scene — Node Graph" data-cap-ja="部屋 Nukeグラフ" data-full="img/nuke_room_graph.png"><img alt="Room Scene — Node Graph" data-alt-ja="部屋グラフ" loading="lazy" src="img/nuke_room_graph.png"/><div class="cap"><span class="lang-en">Room Scene — Node Graph</span> <span class="lang-ja">部屋シーン — ノードグラフ</span></div></div>
+</div>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">c. Scene Transition Animation</span> <span class="lang-ja">c. シーン遷移アニメーション</span></h3>
+<p><span class="lang-en">The transition from a bright dusk sky to a deep, unsettling red sky was expressed through “a flock of crows taking flight.” Since two entirely different environments appear within the same frame, this was hard to achieve in Blender alone and was instead realized in compositing. The leading edge of the crow flock was used as a boundary to advance a Roto Paint mask, and that mask was used to express the transition from the dusk sky to the eerie red sky.</span> <span class="lang-ja">明るい夕暮れの空からまっ赤な不気味な空への遷移は「カラスの群れの飛行」で表現した。同一画面に全く異なる二つの環境が
           登場するため Blender のみでの表現は困難であり、コンポジットで実現。カラスの群れの前線を基準に Roto Paint の範囲を
-          推し進め、そのマスクで夕暮れから不気味な赤空への移行を表現した。
-        </p>
-        <p>
-          レンダリング時にカラス数を増やすとポリゴン数増加で所要時間が伸びるため、
-          <span class="highlight">鳥の群れをコンポジットで複製</span>し、スケール調整とぼかしで遠近感を出した。
-        </p>
-        <div class="gallery">
-          <div class="g-item" data-full="img/shrine_roof_raw.png" data-cap="神社屋根 生画像"><img src="img/shrine_roof_raw.png" alt="神社屋根生画像" loading="lazy"><div class="cap">神社屋根 — 生画像</div></div>
-          <div class="g-item" data-full="img/shrine_roof_fog.png" data-cap="神社屋根 フォグ適用"><img src="img/shrine_roof_fog.png" alt="神社屋根フォグ" loading="lazy"><div class="cap">神社屋根 — フォグ適用</div></div>
-          <div class="g-item" data-full="img/shrine_roof_comp.png" data-cap="神社屋根 カラス合成後"><img src="img/shrine_roof_comp.png" alt="神社屋根カラス合成" loading="lazy"><div class="cap">神社屋根 — カラス合成後</div></div>
-        </div>
-      </div>
-
-      <div class="subsection">
-        <h3>d. コンポジットを活用した応急措置</h3>
-        <p>
-          本作で使用した HDR 環境は Poly Haven の HDR Sky アセットをベースにしたワールドシェーダーだが、
+          推し進め、そのマスクで夕暮れから不気味な赤空への移行を表現した。</span></p>
+<p><span class="lang-en">Since increasing the number of crows at render time would raise polygon count and lengthen render time, <span class="highlight">the flock was instead duplicated in compositing</span>, with scale adjustment and blur used to create a sense of perspective.</span> <span class="lang-ja">レンダリング時にカラス数を増やすとポリゴン数増加で所要時間が伸びるため、
+          <span class="highlight">鳥の群れをコンポジットで複製</span>し、スケール調整とぼかしで遠近感を出した。</span></p>
+<div class="gallery">
+<div class="g-item" data-cap="Shrine Roof — Raw Image" data-cap-ja="神社屋根 生画像" data-full="img/shrine_roof_raw.png"><img alt="Shrine Roof — Raw Image" data-alt-ja="神社屋根生画像" loading="lazy" src="img/shrine_roof_raw.png"/><div class="cap"><span class="lang-en">Shrine Roof — Raw Image</span> <span class="lang-ja">神社屋根 — 生画像</span></div></div>
+<div class="g-item" data-cap="Shrine Roof — Fog Applied" data-cap-ja="神社屋根 フォグ適用" data-full="img/shrine_roof_fog.png"><img alt="Shrine Roof — Fog Applied" data-alt-ja="神社屋根フォグ" loading="lazy" src="img/shrine_roof_fog.png"/><div class="cap"><span class="lang-en">Shrine Roof — Fog Applied</span> <span class="lang-ja">神社屋根 — フォグ適用</span></div></div>
+<div class="g-item" data-cap="Shrine Roof — After Crow Composite" data-cap-ja="神社屋根 カラス合成後" data-full="img/shrine_roof_comp.png"><img alt="Shrine Roof — After Crow Composite" data-alt-ja="神社屋根カラス合成" loading="lazy" src="img/shrine_roof_comp.png"/><div class="cap"><span class="lang-en">Shrine Roof — After Crow Composite</span> <span class="lang-ja">神社屋根 — カラス合成後</span></div></div>
+</div>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">d. Compositing-Based Emergency Fixes</span> <span class="lang-ja">d. コンポジットを活用した応急措置</span></h3>
+<p><span class="lang-en">The HDR environment used in this work is a world shader based on a Poly Haven HDR Sky asset, but during the shader-tuning process it was discovered — while adjusting the camera in the latter half of Cut 2 — that about 40% of the HDR was blown out to white, losing the cloud texture. Changing the world shader would have broken the lighting consistency of the main Cut 1, and re-tuning the existing shaders and color grading would have taken an enormous amount of time, so a <span class="highlight">quick fix in NukeX</span> was chosen instead.</span> <span class="lang-ja">本作で使用した HDR 環境は Poly Haven の HDR Sky アセットをベースにしたワールドシェーダーだが、
           シェーダー調整の過程で HDR の約 40% が白飛びし、雲の質感が失われていることをカット 2 後半のカメラ調整時に発見した。
           ワールドシェーダーを変更するとメインのカット 1 のライティング整合性が崩れ、既存のシェーダーやカラーグレーディングの
-          再調整に膨大な時間がかかるため、<span class="highlight">NukeX での応急措置</span>を選択した。
-        </p>
-        <p>
-          カット 2 では主人公が振り返る動作の中で、4 フレームほど「木だけが映り空がほとんど映らない」箇所があった。
+          再調整に膨大な時間がかかるため、<span class="highlight">NukeX での応急措置</span>を選択した。</span></p>
+<p><span class="lang-en">In Cut 2, within the protagonist’s turning motion, there were roughly four frames where “only trees are visible and almost no sky appears.” Using those four frames, the sky dome was rotated 170 degrees around the Z axis, projecting a correctly-exposed rear sky onto the blown-out forward sky. The 170-degree figure was arrived at through trial and error, specifically to avoid making the audience feel the discomfort of “the same shot being reused.”</span> <span class="lang-ja">カット 2 では主人公が振り返る動作の中で、4 フレームほど「木だけが映り空がほとんど映らない」箇所があった。
           この 4 フレームを利用し、天球を Z 軸中心に 170 度回転させることで、潰れた前方の空に正常な後方の空を映し出した。
-          170 度という角度は「同じ絵の使い回し」という違和感を観客に感じさせないよう試行錯誤の末に導いた数値である。
-        </p>
-      </div>
-    </section>
-
-    <div class="divider">
-      <div class="dline"></div>
-      <svg viewBox="0 0 100 100"><path d="M50 15 C58 30,75 32,68 48 C90 52,90 68,68 72 C74 88,58 96,50 84 C42 96,26 88,32 72 C10 68,10 52,32 48 C25 32,42 30,50 15 Z" fill="none" stroke="#a9865a" stroke-width="1.4"/></svg>
-      <div class="dline"></div>
-    </div>
-    <!-- ============ 06 音響とオーディオ設計 ============ -->
-    <section class="section" id="s6">
-      <div class="section-head">
-        <span class="section-num">06</span>
-        <span class="section-eyebrow">Sound & Audio Design</span>
-      </div>
-      <h2>音響とオーディオ設計</h2>
-      <p class="section-intro">
-        POV 映像では主人公が画面に現れず視覚情報が減る分、<strong>「音」という情報の重要性</strong>が上がる。
-        音だけで映像の文脈を理解させ、作品の世界を味わってもらえるかが大きな課題であった。
-      </p>
-
-      <div class="subsection">
-        <h3>a. 音効の立体感と臨場感 <span class="tag">dearVR Pro 2</span></h3>
-        <p>
-          POV 映像の音効に重要なのは、主人公（＝鑑賞者）を中心とする立体感と包囲感である。
-          音の方向と位置を正確に定めるため dearVR Pro 2 プラグインを採用した。
-        </p>
-        <p>
-          階段のシーンでは山の静寂と広大さを演出するため 3 種類の鳥の鳴き声を重ねた。うち 2 種類は近い位置の左右に、
+          170 度という角度は「同じ絵の使い回し」という違和感を観客に感じさせないよう試行錯誤の末に導いた数値である。</span></p>
+</div>
+</section>
+<div class="divider">
+<div class="dline"></div>
+<svg viewBox="0 0 100 100"><path d="M50 15 C58 30,75 32,68 48 C90 52,90 68,68 72 C74 88,58 96,50 84 C42 96,26 88,32 72 C10 68,10 52,32 48 C25 32,42 30,50 15 Z" fill="none" stroke="#a9865a" stroke-width="1.4"></path></svg>
+<div class="dline"></div>
+</div>
+<!-- ============ 06 音響とオーディオ設計 ============ -->
+<section class="section" id="s6">
+<div class="section-head">
+<span class="section-num">06</span>
+<span class="section-eyebrow">Sound &amp; Audio Design</span>
+</div>
+<h2><span class="lang-en">Sound &amp; Audio Design</span> <span class="lang-ja">音響とオーディオ設計</span></h2>
+<p class="section-intro"><span class="lang-en">In POV footage the protagonist never appears on screen, so visual information is reduced — which raises the importance of <strong>sound as a channel of information</strong>. The central challenge was whether sound alone could convey the context of the footage and let the audience experience the world of the piece.</span> <span class="lang-ja">POV 映像では主人公が画面に現れず視覚情報が減る分、<strong>「音」という情報の重要性</strong>が上がる。
+        音だけで映像の文脈を理解させ、作品の世界を味わってもらえるかが大きな課題であった。</span></p>
+<div class="subsection">
+<h3><span class="lang-en">a. Spatial Depth &amp; Presence in Sound Effects</span> <span class="lang-ja">a. 音効の立体感と臨場感</span> <span class="tag">dearVR Pro 2</span></h3>
+<p><span class="lang-en">What matters most for sound design in POV footage is a sense of spatial depth and surround centered on the protagonist — that is, the viewer. The dearVR Pro 2 plugin was adopted to precisely control the direction and position of sounds.</span> <span class="lang-ja">POV 映像の音効に重要なのは、主人公（＝鑑賞者）を中心とする立体感と包囲感である。
+          音の方向と位置を正確に定めるため dearVR Pro 2 プラグインを採用した。</span></p>
+<p><span class="lang-en">In the staircase scene, three types of birdsong were layered to convey the silence and vastness of the mountain. Two were placed nearby, to the left and right, and one further away, using perceived distance to express spatial scale through sound. Nearby sources used Live Arena and Cathedral reverb, while the distant source used Concert Hall reverb, reproducing <span class="highlight">attenuation over distance</span>.</span> <span class="lang-ja">階段のシーンでは山の静寂と広大さを演出するため 3 種類の鳥の鳴き声を重ねた。うち 2 種類は近い位置の左右に、
           もう 1 種類は遠い位置に配置し、遠近感による空間のスケールを音声で表現。近い音源には Live Arena と Cathedral、
-          遠い音源には Concert Hall のリバーブを設定し、<span class="highlight">距離による減衰</span>を再現した。
-        </p>
-        <div class="gallery g-wide">
-          <div class="g-item" data-full="img/birds_track.png" data-cap="鳥の鳴き声トラック"><img src="img/birds_track.png" alt="鳥トラック" loading="lazy"><div class="cap">REAPER — 鳥の鳴き声トラック</div></div>
-        </div>
-        <p>
-          カラスが飛び去るシーンでは音源を頭部後方上に定位し、驚いて振り返るという主人公の行動に説得力を持たせた。
-          カラスの鳴き声を数十ミリ秒ずらして配置することで、不揃いな鳴き声の自然なランダムさと擬似的な反響のカオス感を再現している。
-        </p>
-      </div>
-
-      <div class="subsection">
-        <h3>b. 音の演出</h3>
-        <p>
-          階段を登るにつれ足音の間隔と着地音を変化させ、疲労を感じる足取りを音で表現した。
-        </p>
-        <p>
-          カラスが飛び去り空が赤く染まった後、3 回の鈴の音に驚き周囲を見回るシーンでは「緊張感」を最大限に表現する工夫を施した。
+          遠い音源には Concert Hall のリバーブを設定し、<span class="highlight">距離による減衰</span>を再現した。</span></p>
+<div class="gallery g-wide">
+<div class="g-item" data-cap="REAPER — Birdsong Track" data-cap-ja="鳥の鳴き声トラック" data-full="img/birds_track.png"><img alt="REAPER — Birdsong Track" data-alt-ja="鳥トラック" loading="lazy" src="img/birds_track.png"/><div class="cap"><span class="lang-en">REAPER — Birdsong Track</span> <span class="lang-ja">REAPER — 鳥の鳴き声トラック</span></div></div>
+</div>
+<p><span class="lang-en">In the scene where the crows fly off, the sound source was positioned above and behind the head, lending believability to the protagonist’s startled turn. Staggering the crow calls by tens of milliseconds reproduced the natural randomness of uneven cries and a pseudo-chaotic sense of echo.</span> <span class="lang-ja">カラスが飛び去るシーンでは音源を頭部後方上に定位し、驚いて振り返るという主人公の行動に説得力を持たせた。
+          カラスの鳴き声を数十ミリ秒ずらして配置することで、不揃いな鳴き声の自然なランダムさと擬似的な反響のカオス感を再現している。</span></p>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">b. Sound Direction</span> <span class="lang-ja">b. 音の演出</span></h3>
+<p><span class="lang-en">The interval between footsteps and the sound of each landing shift as the stairs are climbed, expressing a growing sense of fatigue through sound alone.</span> <span class="lang-ja">階段を登るにつれ足音の間隔と着地音を変化させ、疲労を感じる足取りを音で表現した。</span></p>
+<p><span class="lang-en">After the crows fly off and the sky turns red, the scene where three bell rings startle the protagonist into looking around received extensive work to maximize the sense of tension. The bell sound was shaped with the ReaVerbate effect to add a sense of scale, conveying a feeling of encirclement and despair — as if the uncanny presence were everywhere at once. Each of the three bell rings was pitch-shifted by <strong>0.8, 1.4, and 0.5 semitones</strong> respectively, adding variation while also using <span class="highlight">dissonance to induce unease</span>.</span> <span class="lang-ja">カラスが飛び去り空が赤く染まった後、3 回の鈴の音に驚き周囲を見回るシーンでは「緊張感」を最大限に表現する工夫を施した。
           鈴の音を ReaVerbate エフェクトで調整しスケール感を出すことで「どこにも遍在する怪異」という包囲感と絶望感を演出。
           3 回の鈴の響きはそれぞれ <strong>0.8 / 1.4 / 0.5 セミトーン</strong>ピッチをずらし、バリエーションと同時に
-          <span class="highlight">不調和音による不安感</span>を演出した。
-        </p>
-        <div class="gallery g-wide">
-          <div class="g-item" data-full="img/karasu_track.png" data-cap="カラス・鈴 トラック"><img src="img/karasu_track.png" alt="カラストラック" loading="lazy"><div class="cap">REAPER — カラス・鈴のトラック</div></div>
-        </div>
-        <p>
-          空色が変化した後、背景の鳥の鳴き声もより寂しさと鋭さを感じさせるものに変化させ、状況の異常感と危険感を表現した。
-        </p>
-        <p>
-          尺八の音と共に化け物が登場した後も音を消さず、AUReverb の Gain を <strong>4.56</strong> に設定し残響を極端に伸ばした。
+          <span class="highlight">不調和音による不安感</span>を演出した。</span></p>
+<div class="gallery g-wide">
+<div class="g-item" data-cap="REAPER — Crow &amp;amp; Bell Track" data-cap-ja="カラス・鈴 トラック" data-full="img/karasu_track.png"><img alt="REAPER — Crow &amp;amp; Bell Track" data-alt-ja="カラストラック" loading="lazy" src="img/karasu_track.png"/><div class="cap"><span class="lang-en">REAPER — Crow &amp; Bell Track</span> <span class="lang-ja">REAPER — カラス・鈴のトラック</span></div></div>
+</div>
+<p><span class="lang-en">After the sky changes color, the background birdsong also shifts to something more forlorn and sharp-edged, conveying the wrongness and danger of the situation.</span> <span class="lang-ja">空色が変化した後、背景の鳥の鳴き声もより寂しさと鋭さを感じさせるものに変化させ、状況の異常感と危険感を表現した。</span></p>
+<p><span class="lang-en">The sound is not cut even after the monster appears alongside the shakuhachi tone; the AUReverb Gain was set to <strong>4.56</strong>, stretching the reverb to an extreme length. Combined with the camera slowly approaching the monster and zooming in on its face at close range, this built an atmosphere of “no escape,” “being hypnotized,” and “an inescapable curse.” After the screen cuts to black, near-pure tones layering 13,000Hz and 17,000Hz frequencies play, leaving only a sensation of lost sight and ringing ears. 17,000Hz is a frequency some people can hear and others cannot, an experimental touch aiming at <span class="highlight">“a sound experience that differs depending on the limits of the listener and their equipment.”</span></span> <span class="lang-ja">尺八の音と共に化け物が登場した後も音を消さず、AUReverb の Gain を <strong>4.56</strong> に設定し残響を極端に伸ばした。
           カメラが化け物にゆっくり近づき至近距離で顔にズームインする映像と合わせ、「逃げられない」「催眠されている」
           「宿命的な呪い」という雰囲気を醸成した。画面暗転後は 13000Hz と 17000Hz の高周波トーンを重ねた純音に近い音を流し、
           視界喪失と耳鳴りだけが残る感覚を演出。17000Hz は聞こえる人と聞こえない人が分かれる周波数であり、
-          <span class="highlight">「人と機材の限界によって異なる音響体験」</span>という実験的表現も狙っている。
-        </p>
-      </div>
-
-      <div class="subsection">
-        <h3>c. オートメーション</h3>
-        <p>
-          映像の進行とキャラクターの行動による動きの表現は音響のオートメーションで実現した。
+          <span class="highlight">「人と機材の限界によって異なる音響体験」</span>という実験的表現も狙っている。</span></p>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">c. Automation</span> <span class="lang-ja">c. オートメーション</span></h3>
+<p><span class="lang-en">Movement tied to the progression of the footage and the character’s actions was expressed through audio automation. In the prologue’s cinemagraph section, narration and BGM volume rise together with the still-image zoom while reverb is adjusted, reproducing a hollow, empty resonance. The narration uses Chorus and AUReverb to lend the voice a sense of emptiness and mystery, fine-tuned in frequency with ReaEQ. The BGM’s reverb, shaped with ReaDelay, gives it weight and gravity.</span> <span class="lang-ja">映像の進行とキャラクターの行動による動きの表現は音響のオートメーションで実現した。
           プロローグのシネマグラフィックス部分では、静止画のズームインに合わせてナレーションと BGM のボリュームを上げつつ
           反響を調整し、空疎な響きを再現。ナレーションは Chorus と AUReverb で虚無感と神秘的な声質を演出し、
-          ReaEQ で周波数を微調整。BGM は ReaDelay で残響を表現し重厚感を演出した。
-        </p>
-        <p>
-          手水台の流水音も空間的に正しく再現している。主人公が鳥居をくぐった時点で小さいボリュームで再生を始め、
+          ReaEQ で周波数を微調整。BGM は ReaDelay で残響を表現し重厚感を演出した。</span></p>
+<p><span class="lang-en">The sound of running water at the purification fountain (chōzuya) is also spatially accurate. It begins playing at low volume the moment the protagonist passes through the torii gate, then changes in volume with distance from the fountain. Since the fountain isn’t always directly ahead, the shifting relative direction of the sound was also reproduced through audio automation.</span> <span class="lang-ja">手水台の流水音も空間的に正しく再現している。主人公が鳥居をくぐった時点で小さいボリュームで再生を始め、
           手水台からの距離によってボリュームが変化。手水台が常に正面にあるわけではないため、
-          相対的な方向の変化と推移も音響のオートメーションで再現した。
-        </p>
-        <div class="gallery g-wide">
-          <div class="g-item" data-full="img/water_automation.png" data-cap="流水音 オートメーション"><img src="img/water_automation.png" alt="流水オートメーション" loading="lazy"><div class="cap">手水台 — 流水音オートメーション</div></div>
-        </div>
-      </div>
-
-      <div class="subsection">
-        <h3>d. モーションに伴う音</h3>
-        <p>
-          POV 映像では主人公を直接見ることができないため、モーションに伴う音効の演出は説得力を上げる上で非常に重要である。
-          本制作ではモーションによる直接・間接の音、その発生強度、方向と位置の正確な再現を目指した。
-        </p>
-        <p>
-          足音は歩く地面の素材によって変えている。階段シーンでは硬めの足音をベースに砂利を踏む効果音を小さめでかけ、
+          相対的な方向の変化と推移も音響のオートメーションで再現した。</span></p>
+<div class="gallery g-wide">
+<div class="g-item" data-cap="Water Basin — Flowing Water Automation" data-cap-ja="流水音 オートメーション" data-full="img/water_automation.png"><img alt="Water Basin — Flowing Water Automation" data-alt-ja="流水オートメーション" loading="lazy" src="img/water_automation.png"/><div class="cap"><span class="lang-en">Water Basin — Flowing Water Automation</span> <span class="lang-ja">手水台 — 流水音オートメーション</span></div></div>
+</div>
+</div>
+<div class="subsection">
+<h3><span class="lang-en">d. Motion-Driven Sound</span> <span class="lang-ja">d. モーションに伴う音</span></h3>
+<p><span class="lang-en">Since the protagonist can never be seen directly in POV footage, the design of motion-driven sound effects is critical to believability. This production aimed for accurate reproduction of both direct and indirect sounds caused by motion, along with their intensity, direction, and position.</span> <span class="lang-ja">POV 映像では主人公を直接見ることができないため、モーションに伴う音効の演出は説得力を上げる上で非常に重要である。
+          本制作ではモーションによる直接・間接の音、その発生強度、方向と位置の正確な再現を目指した。</span></p>
+<p><span class="lang-en">Footstep sound changes with the ground material being walked on. In the staircase scene, a firmer base footstep is layered with a quiet gravel-crunch effect, offset by tens of milliseconds to account for the natural motion of a walking foot. Within the shrine grounds, assumed to be covered in fallen leaves, a firmer footstep is layered with a grass-rustling effect, with variation added for leaf size and quantity. The steps of the main shrine hall use a clear, hard footstep, reflecting an image of the area being freshly swept.</span> <span class="lang-ja">足音は歩く地面の素材によって変えている。階段シーンでは硬めの足音をベースに砂利を踏む効果音を小さめでかけ、
           人が歩く際の足の運びを考慮し砂利音を数十ミリ秒遅らせて重ねた。神社の境内では落ち葉に覆われた地面を想定し
           硬めの足音に草を踏む効果音を重ね、落ち葉の大きさや枚数を考慮したバリエーションを加えた。
-          社殿の階段は清掃されたイメージのためはっきりとした硬い足音とした。
-        </p>
-        <p>
-          モーションのタイミングによっても音質を変化させている。階段の最後の段を降りた（登った）着地の瞬間は
+          社殿の階段は清掃されたイメージのためはっきりとした硬い足音とした。</span></p>
+<p><span class="lang-en">Sound quality also changes with motion timing. The moment of landing on the final step of the staircase — whether descending or ascending — uses a more forceful footstep. In the room scene, since the two feet rarely land at exactly the same moment as the protagonist steps down from the bed, the audio reproduces <span class="highlight">a stronger sound for the first foot to land, followed by a softer sound for the second</span>.</span> <span class="lang-ja">モーションのタイミングによっても音質を変化させている。階段の最後の段を降りた（登った）着地の瞬間は
           より力強い足音とした。部屋のシーンでは、主人公がベッドから降り足をつける際、両足が同時に着地することは少ないため
-          <span class="highlight">最初に着いた足の力強い音と、続く足の弱い音</span>を再現している。
-        </p>
-      </div>
-    </section>
-
-    <!-- ============ FOOTER ============ -->
-    <footer>
-      <div class="ftitle">制作テクニカルノート — 赫</div>
-      <div class="fmeta">FULL PRODUCTION PIPELINE DOCUMENT ／ © 2026 MiDUki・Ramunecider ALL RIGHTS RESERVED</div>
-    </footer>
-
-  </div><!-- /content -->
+          <span class="highlight">最初に着いた足の力強い音と、続く足の弱い音</span>を再現している。</span></p>
+</div>
+</section>
+<!-- ============ FOOTER ============ -->
+<footer>
+<div class="ftitle"><span class="lang-en">Production Technical Notes — Aka</span> <span class="lang-ja">制作テクニカルノート — 赫</span></div>
+<div class="fmeta">FULL PRODUCTION PIPELINE DOCUMENT ／ © 2026 MiDUki・Ramunecider ALL RIGHTS RESERVED</div>
+</footer>
+</div><!-- /content -->
 </div><!-- /layout -->
-
 <!-- ============ LIGHTBOX ============ -->
 <div class="lightbox" id="lightbox">
-  <span class="lb-close">✕ CLOSE</span>
-  <img id="lightbox-img" src="" alt="">
-  <div class="lb-cap" id="lightbox-cap"></div>
+<span class="lb-close">✕ CLOSE</span>
+<img alt="" id="lightbox-img" src=""/>
+<div class="lb-cap" id="lightbox-cap"></div>
 </div>
-
 <script>
 // sidebar collapse/expand
 const layoutRoot = document.getElementById('layoutRoot');
@@ -1285,13 +1159,46 @@ const lbImg = document.getElementById('lightbox-img');
 const lbCap = document.getElementById('lightbox-cap');
 document.querySelectorAll('.g-item').forEach(item=>{
   item.addEventListener('click', ()=>{
+    const isJa = document.documentElement.classList.contains('lang-ja');
     lbImg.src = item.getAttribute('data-full');
-    lbCap.textContent = item.getAttribute('data-cap') || '';
+    lbCap.textContent = (isJa ? item.getAttribute('data-cap-ja') : item.getAttribute('data-cap')) || '';
     lb.classList.add('open');
   });
 });
 lb.addEventListener('click', ()=> lb.classList.remove('open'));
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') lb.classList.remove('open'); });
+
+// language toggle (EN default, JA optional) — state kept in memory only, no localStorage
+const htmlEl = document.documentElement;
+const titleEl = document.querySelector('title');
+const langButtons = document.querySelectorAll('#langToggle button');
+const galleryImgs = document.querySelectorAll('.g-item img[data-alt-ja]');
+
+function setLanguage(lang){
+  htmlEl.classList.toggle('lang-en', lang === 'en');
+  htmlEl.classList.toggle('lang-ja', lang === 'ja');
+  htmlEl.setAttribute('lang', lang);
+  if(titleEl){
+    titleEl.textContent = lang === 'ja'
+      ? titleEl.getAttribute('data-title-ja')
+      : titleEl.getAttribute('data-title-en');
+  }
+  galleryImgs.forEach(img=>{
+    if(lang === 'ja'){
+      img.setAttribute('alt', img.getAttribute('data-alt-ja') || img.getAttribute('alt'));
+    }else{
+      img.setAttribute('alt', img.getAttribute('data-alt-en') || img.getAttribute('alt'));
+    }
+  });
+  langButtons.forEach(btn=> btn.classList.toggle('active', btn.getAttribute('data-lang') === lang));
+}
+
+// store the original (English) alt as data-alt-en so we can swap back
+galleryImgs.forEach(img=> img.setAttribute('data-alt-en', img.getAttribute('alt')));
+
+langButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=> setLanguage(btn.getAttribute('data-lang')));
+});
 </script>
 </body>
 </html>
