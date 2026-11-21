@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 
-<html class="lang-en" lang="en">
+<html class="lang-ja" lang="ja">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title data-title-en="Production Technical Notes — Aka: A POV Horror Production Diary" data-title-ja="制作テクニカルノート — 赫・POVホラー制作記録">Production Technical Notes — Aka: A POV Horror Production Diary</title>
+<title data-title-en="Production Technical Notes — Aka: A POV Horror Production Diary" data-title-ja="制作テクニカルノート — 赫・POVホラー制作記録">制作テクニカルノート — 赫・POVホラー制作記録</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;800&amp;family=Noto+Sans+JP:wght@300;400;500;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
@@ -564,8 +564,8 @@ html.lang-en .cap{font-family:'JetBrains Mono', 'Noto Sans JP', sans-serif; lett
 </button>
 
 <div aria-label="Language / 言語" class="lang-toggle" id="langToggle" role="group">
-<button class="active" data-lang="en" type="button">EN</button>
-<button data-lang="ja" type="button">日本語</button>
+<button data-lang="en" type="button">EN</button>
+<button class="active" data-lang="ja" type="button">日本語</button>
 </div>
 
 <div class="layout" id="layoutRoot">
@@ -1213,7 +1213,7 @@ document.querySelectorAll('.g-item').forEach(item=>{
 lb.addEventListener('click', ()=> lb.classList.remove('open'));
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') lb.classList.remove('open'); });
 
-// language toggle (EN default, JA optional) — state kept in memory only, no localStorage
+// language toggle (JA default, EN optional) — state kept in memory only, no localStorage
 const htmlEl = document.documentElement;
 const titleEl = document.querySelector('title');
 const langButtons = document.querySelectorAll('#langToggle button');
@@ -1244,6 +1244,9 @@ galleryImgs.forEach(img=> img.setAttribute('data-alt-en', img.getAttribute('alt'
 langButtons.forEach(btn=>{
   btn.addEventListener('click', ()=> setLanguage(btn.getAttribute('data-lang')));
 });
+
+// default language: Japanese (sync title / alt text / toggle state on load)
+setLanguage('ja');
 </script>
 </body>
 </html>
