@@ -472,6 +472,37 @@ nav.toc a.active .num{color:var(--ink-red-bright); opacity:1;}
   letter-spacing:0.1em;
 }
 
+/* ---------- film / video ---------- */
+.video-section{padding-top:96px; padding-bottom:96px;}
+.video-frame{
+  position:relative;
+  width:100%;
+  max-width:980px;
+  aspect-ratio:16 / 9;
+  background:#000;
+  border:1px solid var(--line-strong);
+  box-shadow:0 30px 90px rgba(0,0,0,0.55), 0 0 60px rgba(156,43,58,0.12);
+}
+.video-frame iframe{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  border:0;
+}
+.video-link{
+  margin-top:18px;
+  font-family:var(--font-mono);
+  font-size:12px;
+  letter-spacing:0.08em;
+}
+.video-link a{
+  color:var(--gold);
+  text-decoration:none;
+  border-bottom:1px solid var(--line-strong);
+  padding-bottom:2px;
+  transition:color .2s ease, border-color .2s ease;
+}
+.video-link a:hover{color:var(--paper); border-bottom-color:var(--ink-red-bright);}
+
 /* footer */
 footer{
   padding:64px clamp(24px,6vw,96px) 80px;
@@ -544,6 +575,7 @@ html.lang-en .cap{font-family:'JetBrains Mono', 'Noto Sans JP', sans-serif; lett
 <div class="sidebar-title"><span class="lang-en">Technical Notes</span> <span class="lang-ja">テクニカルノート</span></div>
 <div class="sidebar-sub">PRODUCTION PIPELINE DOCUMENT</div>
 <nav class="toc">
+<a href="#film"><span class="num">00</span> <span class="lang-en">The Film</span><span class="lang-ja">本編映像</span></a>
 <a href="#s1"><span class="num">01</span> <span class="lang-en">Production Pipeline</span><span class="lang-ja">プロダクションパイプライン</span></a>
 <a href="#s2"><span class="num">02</span> <span class="lang-en">Art, Sculpting &amp; Look Dev</span><span class="lang-ja">美術・造形とルックデヴ</span></a>
 <a href="#s3"><span class="num">03</span> <span class="lang-en">Procedural Generation</span><span class="lang-ja">プロシージャル生成</span></a>
@@ -580,6 +612,19 @@ html.lang-en .cap{font-family:'JetBrains Mono', 'Noto Sans JP', sans-serif; lett
         コンセプトアートから造形、プロシージャル生成、レンダリング最適化、コンポジット、
         そして音響設計まで — 6 つの視点から本作の技術的な舞台裏を記録する。</span></p>
 <div class="scrolldown"><span>SCROLL</span><div class="line"></div></div>
+</section>
+<!-- ============ 00 FILM / 本編映像 ============ -->
+<section class="section video-section" id="film">
+<div class="section-head">
+<span class="section-num">00</span>
+<span class="section-eyebrow">The Film</span>
+</div>
+<h2><span class="lang-en">Watch the Film</span> <span class="lang-ja">本編映像</span></h2>
+<p class="section-intro"><span class="lang-en">The finished film that this document breaks down. Watching it first makes the technical notes below easier to follow.</span> <span class="lang-ja">本ドキュメントが解説する完成映像。先に本編を観てから読み進めると、以下のテクニカルノートがより理解しやすくなる。</span></p>
+<div class="video-frame">
+<iframe src="https://www.youtube-nocookie.com/embed/AtNON37FLCg" title="Aka — Film" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe>
+</div>
+<p class="video-link"><a href="https://www.youtube.com/watch?v=AtNON37FLCg" target="_blank" rel="noopener noreferrer"><span class="lang-en">Open on YouTube ↗</span><span class="lang-ja">YouTube で開く ↗</span></a></p>
 </section>
 <!-- ============ 01 パイプライン ============ -->
 <section class="section" id="s1">
